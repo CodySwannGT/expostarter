@@ -1,0 +1,17 @@
+# Maestro E2E Testing Configuration
+#
+# Global configuration for Maestro mobile E2E tests.
+# This file is loaded automatically by Maestro when running tests.
+#
+# @see https://docs.maestro.dev/api-reference/configuration/workspace-configuration
+
+# Flow inclusion patterns
+flows:
+  - 'flows/**/*.yaml'
+
+# Continue running subsequent flows if one fails
+continueOnFailure: false
+
+# Note: appId must be defined in each flow file, not here.
+# iOS uses hyphen suffix: com.your-org.your-project-dev, -staging, or no suffix for production
+# Android uses underscore suffix: com.your-org.your-project_dev, _staging, or no suffix for production

@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "1.0.0",
+  "org": "your-org",
+  "displayName": "Your Project",
+  "purpose": "The durable knowledge base for the Your Project Expo/React Native frontend — a cross-platform application (iOS, Android, web) built on Apollo GraphQL, Gluestack UI, and Sentry. It captures the architecture, domain concepts, decisions, conventions, and operational playbooks for the app so agents and contributors can answer questions and onboard from a single cited source of truth.",
+  "mode": "embedded",
+  "wikiRoot": "wiki",
+  "frontmatter": true,
+  "categories": [
+    "concepts",
+    "entities",
+    "decisions",
+    "architecture",
+    "requirements",
+    "playbooks",
+    "open-questions",
+    "projects",
+    "sales",
+    "marketing",
+    "finance",
+    "customers",
+    "people",
+    "legal"
+  ],
+  "sources": { "layout": "by-system" },
+  "git": { "prPerIngestion": true, "autoMerge": true, "targetBranch": "main", "branchPrefix": "wiki/" },
+  "sensitivity": { "enabled": true, "default": "internal" },
+  "sourceRetention": "sanitized-note-only",
+  "readme": { "mode": "rich" },
+  "documentation": { "absorb": true },
+  "connectors": {
+    "git": { "enabled": true, "sideEffects": "read-only-ingest" },
+    "memory": { "enabled": true, "sideEffects": "read-only-ingest" },
+    "roles": { "enabled": true, "sideEffects": "read-only-ingest" }
+  },
+  "staff": [
+    { "id": "chief", "role": "Chief of Staff", "expertise": "cross-functional coordination, project status, decisions, and playbooks", "owns": { "categories": ["projects", "decisions", "playbooks", "open-questions"] }, "sensitivity": "confidential" },
+    { "id": "sally", "role": "Sales", "expertise": "sales pipeline, deals, and go-to-market", "owns": { "categories": ["sales"] }, "sensitivity": "internal" },
+    { "id": "mark", "role": "Marketing", "expertise": "marketing, positioning, and growth", "owns": { "categories": ["marketing"] }, "sensitivity": "internal" },
+    { "id": "felix", "role": "Finance", "expertise": "finance, budgeting, and forecasting", "owns": { "categories": ["finance"] }, "sensitivity": "confidential" },
+    { "id": "casey", "role": "Customer Success", "expertise": "customer success, support, and retention", "owns": { "categories": ["customers"] }, "sensitivity": "internal" },
+    { "id": "parker", "role": "People", "expertise": "people operations, hiring, and team", "owns": { "categories": ["people"] }, "sensitivity": "confidential" },
+    { "id": "lex", "role": "Legal & Compliance", "expertise": "legal, compliance, and contracts", "owns": { "categories": ["legal"] }, "sensitivity": "confidential" }
+  ]
+}

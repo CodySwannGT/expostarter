@@ -1,0 +1,101 @@
+{
+  "cli": {
+    "version": ">= 7.2.0"
+  },
+  "build": {
+    "base": {
+      "node": "22.21.1"
+    },
+    "dev-base": {
+      "extends": "base",
+      "channel": "dev",
+      "env": {
+        "EXPO_PUBLIC_APP_ENV": "dev",
+        "EXPO_PUBLIC_GRAPHQL_BASE_URL": "xxxxxxx",
+        "EXPO_PUBLIC_SENTRY_DSN": "xxxxxxx"
+      }
+    },
+    "dev": {
+      "extends": "dev-base",
+      "developmentClient": true,
+      "distribution": "internal",
+      "channel": "dev"
+    },
+    "dev-simulator": {
+      "extends": "dev-base",
+      "developmentClient": true,
+      "ios": {
+        "simulator": true
+      }
+    },
+    "dev-preview": {
+      "extends": "dev-base",
+      "developmentClient": false,
+      "distribution": "internal"
+    },
+    "staging": {
+      "extends": "base",
+      "channel": "staging",
+      "env": {
+        "EXPO_PUBLIC_APP_ENV": "staging",
+        "EXPO_PUBLIC_GRAPHQL_BASE_URL": "xxxxxxx",
+        "EXPO_PUBLIC_SENTRY_DSN": "xxxxxxx"
+      }
+    },
+    "production-preview": {
+      "extends": "base",
+      "channel": "production",
+      "developmentClient": false,
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_APP_ENV": "production",
+        "EXPO_PUBLIC_GRAPHQL_BASE_URL": "xxxxxxx",
+        "EXPO_PUBLIC_SENTRY_DSN": "xxxxxxx"
+      }
+    },
+    "production": {
+      "extends": "base",
+      "channel": "production",
+      "env": {
+        "EXPO_PUBLIC_APP_ENV": "production",
+        "EXPO_PUBLIC_GRAPHQL_BASE_URL": "xxxxxxx",
+        "EXPO_PUBLIC_SENTRY_DSN": "xxxxxxx"
+      }
+    }
+  },
+  "submit": {
+    "base": {
+      "android": {},
+      "ios": {}
+    },
+    "dev": {
+      "extends": "base",
+      "ios": {},
+      "android": {
+        "track": "internal"
+      }
+    },
+    "dev-preview": {
+      "extends": "base",
+      "ios": {},
+      "android": {
+        "track": "internal"
+      }
+    },
+    "staging": {
+      "extends": "base",
+      "ios": {},
+      "android": {
+        "track": "internal",
+        "releaseStatus": "draft"
+      }
+    },
+    "production": {
+      "extends": "base",
+      "ios": {},
+      "android": {
+        "track": "production"
+      }
+    }
+  }
+}

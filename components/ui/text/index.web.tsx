@@ -1,0 +1,51 @@
+import React from 'react';
+import type { VariantProps } from '@gluestack-ui/utils/nativewind-utils';
+import { textStyle } from './styles';
+
+type ITextProps = React.ComponentProps<'span'> &
+  VariantProps<typeof textStyle> & {
+    /** Test ID for E2E testing - maps to data-testid on web */
+    testID?: string;
+  };
+
+const Text = React.forwardRef<React.ComponentRef<'span'>, ITextProps>(
+  function Text(
+    {
+      className,
+      isTruncated,
+      bold,
+      underline,
+      strikeThrough,
+      size = 'md',
+      sub,
+      italic,
+      highlight,
+      testID,
+      ...props
+    },
+    ref
+  ) {
+    return (
+      <span
+        className={textStyle({
+          isTruncated: isTruncated as boolean,
+          bold: bold as boolean,
+          underline: underline as boolean,
+          strikeThrough: strikeThrough as boolean,
+          size,
+          sub: sub as boolean,
+          italic: italic as boolean,
+          highlight: highlight as boolean,
+          class: className,
+        })}
+        data-testid={testID}
+        {...props}
+        ref={ref}
+      />
+    );
+  }
+);
+
+Text.displayName = 'Text';
+
+export { Text };

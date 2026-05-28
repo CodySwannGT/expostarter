@@ -1,0 +1,42 @@
+# Home Screen E2E Test Flow
+#
+# Verifies that the home screen loads correctly and displays the expected content.
+# Uses testID selectors matching those defined in app/index.tsx.
+#
+# Test IDs used:
+# - home:container - Main container box
+# - home:title - Hello World text element
+#
+# @see https://docs.maestro.dev/api-reference/configuration/flow-configuration
+
+# App identifier (dev environment)
+# iOS: com.your-org.your-project-dev
+# Android: com.your-org.your-project_dev
+appId: com.your-org.your-project-dev
+name: Home Screen - Display Verification
+tags:
+  - smoke
+  - home
+---
+# Launch the application
+- launchApp
+
+# Wait for the home screen to load
+- extendedWaitUntil:
+    visible:
+      id: 'home:container'
+    timeout: 10000
+
+# Verify home container is visible
+- assertVisible:
+    id: 'home:container'
+
+# Verify Hello World text is displayed
+- assertVisible:
+    id: 'home:title'
+
+# Verify the text content
+- assertVisible: 'Hello, World!'
+
+# Take a screenshot for visual verification
+- takeScreenshot: home-screen-loaded

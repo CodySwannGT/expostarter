@@ -1,0 +1,14 @@
+/**
+ * Global CSS file for NativeWind/Tailwind CSS
+ *
+ * This file imports Tailwind CSS directives which are processed by NativeWind
+ * to generate React Native compatible styles. The metro.config.js references
+ * this file as the CSS entry point.
+ *
+ * @see https://www.nativewind.dev/v4/getting-started/expo-router
+ * @see https://tailwindcss.com/docs/functions-and-directives
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

@@ -1,0 +1,31 @@
+# App Launch E2E Test Flow
+#
+# Smoke test that verifies the app launches successfully without crashes.
+# This is the most basic test and should always pass for a healthy app.
+#
+# @see https://docs.maestro.dev/api-reference/configuration/flow-configuration
+
+# App identifier (dev environment)
+# iOS: com.your-org.your-project-dev
+# Android: com.your-org.your-project_dev
+appId: com.your-org.your-project-dev
+name: App Launch - Smoke Test
+tags:
+  - smoke
+  - critical
+---
+# Launch the application
+- launchApp
+
+# Wait for the app to be ready (any content visible)
+- extendedWaitUntil:
+    visible:
+      id: 'home:container'
+    timeout: 15000
+
+# Verify app launched successfully
+- assertVisible:
+    id: 'home:container'
+
+# Stop the app to verify clean shutdown
+- stopApp

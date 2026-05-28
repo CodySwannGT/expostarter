@@ -1,0 +1,18 @@
+{
+  "connector": "git",
+  "profile": "thumbwar-frontend",
+  "lastSuccessfulRunAt": "2026-05-28T00:57:39.367Z",
+  "cursor": {
+    "lastCommit": "fa3c66de9a52c92172124193e01cd330e0c2850a",
+    "lastPr": 153
+  },
+  "sourceNotes": [
+    "wiki/sources/git/2026-05-28-thumbwar-frontend-git.md"
+  ],
+  "synthesisPages": [
+    "projects/thumbwar-frontend.md",
+    "architecture/app-architecture.md",
+    "concepts/tech-stack.md"
+  ],
+  "schemaVersion": "1.0.0"
+}
