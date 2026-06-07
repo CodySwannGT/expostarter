@@ -117,6 +117,7 @@
     "patch-package",
     "react-hook-form",
     "react-native-element-dropdown",
+    "react-native-worklets",
     "react-native-keyboard-controller",
     "tailwind-variants",
     "tar",

@@ -10,10 +10,10 @@ const config: CodegenConfig = {
     "./operations.graphql",
     "!**/node_modules",
     // "!graphql",
-    "!generated",
+    "!src/generated",
   ],
   generates: {
-    "generated/graphql.ts": {
+    "src/generated/graphql.ts": {
       plugins: [
         "typescript",
         "typescript-operations",
