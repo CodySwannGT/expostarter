@@ -8,7 +8,9 @@ import { version } from "./package.json";
 // CHANGE THIS WHEN ADDING A NEW NATIVE MODULE. This will require a new build.
 const runtimeVersion = "1.0.0";
 const projectId = "TODO";
-const bundleIdentifier = "com.your-org.your-project";
+// Reverse-DNS app id. Each segment must be a valid Android package component
+// (letters/digits/underscore, no hyphens) — replace per-fork.
+const bundleIdentifier = "com.yourorg.yourproject";
 const appName = "Your Project";
 
 const stage = process.env.STAGE ?? "dev";
