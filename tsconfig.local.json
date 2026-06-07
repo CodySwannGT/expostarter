@@ -2,13 +2,15 @@
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": ".",
-    "types": ["jest"],
+    "types": [
+      "jest"
+    ],
     "paths": {
       "@/graphql/*": [
-        "./generated/*"
+        "./src/generated/*"
       ],
       "@/*": [
-        "./*"
+        "./src/*"
       ]
     }
   },
@@ -21,6 +23,7 @@
     "node_modules",
     "dist",
     "web-build",
-    "components/ui"
-  ]
+    "src/components/ui"
+  ],
+  "files": []
 }

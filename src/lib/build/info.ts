@@ -7,7 +7,8 @@ import * as Application from "expo-application";
 import * as Updates from "expo-updates";
 
 import { env } from "@/lib/env";
-import { version } from "@/package.json";
+// package.json lives at the project root, outside the `@/` (src) alias scope.
+import { version } from "../../../package.json";
 
 import buildVersionString from "./buildVersionString";
 

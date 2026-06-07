@@ -40,6 +40,6 @@ config.transformer = {
 };
 
 module.exports = withNativeWind(config, {
-  input: "./global.css",
+  input: "./src/global.css",
   output: "./output.css",
 });

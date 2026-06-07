@@ -11,17 +11,17 @@ import type { Config } from "jest";
 
 const config: Config = {
   moduleNameMapper: {
-    "^@/(.*)$": "<rootDir>/$1",
+    "^@/(.*)$": "<rootDir>/src/$1",
   },
 
   testMatch: [
-    "<rootDir>/__tests__/**/*.(test|spec).[jt]s?(x)",
-    "<rootDir>/app/**/*.(test|spec).[jt]s?(x)",
-    "<rootDir>/features/**/*.(test|spec).[jt]s?(x)",
-    "<rootDir>/hooks/**/*.(test|spec).[jt]s?(x)",
-    "<rootDir>/components/**/*.(test|spec).[jt]s?(x)",
-    "<rootDir>/utils/**/*.(test|spec).[jt]s?(x)",
-    "<rootDir>/lib/**/*.(test|spec).[jt]s?(x)",
+    "<rootDir>/src/__tests__/**/*.(test|spec).[jt]s?(x)",
+    "<rootDir>/src/app/**/*.(test|spec).[jt]s?(x)",
+    "<rootDir>/src/features/**/*.(test|spec).[jt]s?(x)",
+    "<rootDir>/src/hooks/**/*.(test|spec).[jt]s?(x)",
+    "<rootDir>/src/components/**/*.(test|spec).[jt]s?(x)",
+    "<rootDir>/src/utils/**/*.(test|spec).[jt]s?(x)",
+    "<rootDir>/src/lib/**/*.(test|spec).[jt]s?(x)",
     "<rootDir>/eslint-plugin-*/__tests__/**/*.test.js",
   ],
 
