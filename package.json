@@ -166,7 +166,7 @@
     "@sentry/react-native": "~7.11.0",
     "@shopify/flash-list": "2.0.2",
     "@shopify/react-native-skia": "2.6.2",
-    "apollo-link-sentry": "^3.3.0",
+    "apollo-link-sentry": "4.4.0",
     "base-64": "^1.0.0",
     "date-fns": "^3.6.0",
     "date-fns-tz": "^3.1.3",
