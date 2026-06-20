@@ -3,7 +3,7 @@
     "@ast-grep/cli": "^0.40.4",
     "@babel/core": "^7.20.0",
     "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
-    "@codyswann/lisa": "^2.171.3",
+    "@codyswann/lisa": "^2.176.0",
     "@commitlint/cli": "^20.3.1",
     "@commitlint/config-conventional": "^20.3.1",
     "@eslint-community/eslint-plugin-eslint-comments": "^4.5.0",
@@ -228,8 +228,12 @@
     "flatted": ">=3.4.0",
     "undici": "^6.24.0",
     "picomatch": ">=4.0.4",
-    "vite": ">=8.0.5",
-    "handlebars": ">=4.7.9"
+    "vite": ">=8.0.16",
+    "handlebars": ">=4.7.9",
+    "esbuild": ">=0.28.1",
+    "lodash": ">=4.18.1",
+    "ws": ">=8.21.0",
+    "form-data": ">=4.0.6"
   },
   "overrides": {
     "eslint-plugin-react-hooks": "^7.0.0",
@@ -243,9 +247,13 @@
     "flatted": ">=3.4.0",
     "undici": "^6.24.0",
     "picomatch": ">=4.0.4",
-    "vite": ">=8.0.5",
+    "vite": "^8.0.16",
     "handlebars": ">=4.7.9",
-    "eslint-plugin-sonarjs": "^4.0.3"
+    "eslint-plugin-sonarjs": "^4.0.3",
+    "esbuild": ">=0.28.1",
+    "lodash": ">=4.18.1",
+    "ws": ">=8.21.0",
+    "form-data": ">=4.0.6"
   },
   "trustedDependencies": [
     "@ast-grep/cli",
