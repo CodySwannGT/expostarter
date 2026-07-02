@@ -10,9 +10,9 @@
 # @see https://docs.maestro.dev/api-reference/configuration/flow-configuration
 
 # App identifier (dev environment)
-# iOS: com.your-org.your-project-dev
-# Android: com.your-org.your-project_dev
-appId: com.your-org.your-project-dev
+# iOS: com.yourorg.yourproject-dev
+# Android: com.yourorg.yourproject_dev
+appId: com.yourorg.yourproject-dev
 name: Home Screen - Display Verification
 tags:
   - smoke

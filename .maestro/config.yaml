@@ -13,5 +13,5 @@ flows:
 continueOnFailure: false
 
 # Note: appId must be defined in each flow file, not here.
-# iOS uses hyphen suffix: com.your-org.your-project-dev, -staging, or no suffix for production
-# Android uses underscore suffix: com.your-org.your-project_dev, _staging, or no suffix for production
+# iOS uses hyphen suffix: com.yourorg.yourproject-dev, -staging, or no suffix for production
+# Android uses underscore suffix: com.yourorg.yourproject_dev, _staging, or no suffix for production
