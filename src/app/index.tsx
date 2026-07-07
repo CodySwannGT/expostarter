@@ -1,6 +1,7 @@
 /**
  * Index route for the application.
  * Displays a simple "Hello, World!" greeting with build version information.
+ * Built exclusively from design-library atoms + semantic tokens.
  *
  * URL: /
  *
@@ -16,9 +17,9 @@ import { Alert, Platform } from "react-native";
 
 import * as Clipboard from "expo-clipboard";
 
-import { Box } from "@/components/ui/box";
-import { Pressable } from "@/components/ui/pressable";
-import { Text } from "@/components/ui/text";
+import { Box } from "@/components/atoms/Box";
+import { Pressable } from "@/components/atoms/Pressable";
+import { Text } from "@/components/atoms/Text";
 import { formatOtaDebugAlert, getBuildInfo } from "@/lib/build/info";
 
 /**
@@ -52,17 +53,19 @@ export default function Index(): React.JSX.Element {
   return (
     <Box
       testID="home:container"
-      className="flex-1 items-center justify-center bg-white"
+      className="flex-1 items-center justify-center bg-surface-base"
     >
-      <Text testID="home:title" className="text-2xl font-bold text-gray-900">
+      <Text
+        testID="home:title"
+        variant="display-sm"
+        className="text-content-primary"
+      >
         Hello, World!
       </Text>
-      <Pressable
-        testID="home:version"
-        onPress={handleVersionPress}
-        className="mt-4 p-2"
-      >
-        <Text className="text-xs text-gray-500">{versionString}</Text>
+      <Pressable testID="home:version" onPress={handleVersionPress}>
+        <Text variant="caption" className="mt-4 p-2 text-content-muted">
+          {versionString}
+        </Text>
       </Pressable>
     </Box>
   );

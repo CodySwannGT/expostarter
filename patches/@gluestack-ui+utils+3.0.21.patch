@@ -1,0 +1,87 @@
+diff --git a/node_modules/@gluestack-ui/utils/lib/esm/nativewind-utils/cn/index.js b/node_modules/@gluestack-ui/utils/lib/esm/nativewind-utils/cn/index.js
+index d4789b55b..b160d3d85 100644
+--- a/node_modules/@gluestack-ui/utils/lib/esm/nativewind-utils/cn/index.js
++++ b/node_modules/@gluestack-ui/utils/lib/esm/nativewind-utils/cn/index.js
+@@ -1,6 +1,32 @@
+ import clsx from 'clsx';
+-import { twMerge } from 'tailwind-merge';
++import { extendTailwindMerge } from 'tailwind-merge';
++// Register the app's custom text-style tokens (tailwind.config.js fontSize:
++// micro/caption/body/title-*/display-*) in the font-size class group.
++// Without this, tailwind-merge classifies them as text COLORS and a color
++// class later in the merge silently deletes the font size (app-wide heading
++// shrink). Keep this list in sync with tailwind.config.js fontSize and the
++// twin list in ../tva/index.js.
++const customFontSizes = [
++    '2xs',
++    '10xl',
++    'micro',
++    'caption',
++    'body',
++    'title-sm',
++    'title',
++    'title-lg',
++    'display-sm',
++    'display-md',
++    'display-lg',
++    'display-xl',
++    'display-2xl',
++];
++const twMerge = extendTailwindMerge({
++    classGroups: {
++        'font-size': [{ text: customFontSizes }],
++    },
++});
+ export function cn(...inputs) {
+     return twMerge(clsx(inputs));
+ }
+-//# sourceMappingURL=index.js.map
+\ No newline at end of file
++//# sourceMappingURL=index.js.map
+diff --git a/node_modules/@gluestack-ui/utils/lib/esm/nativewind-utils/tva/index.js b/node_modules/@gluestack-ui/utils/lib/esm/nativewind-utils/tva/index.js
+index 3d4fc650d..21767a205 100644
+--- a/node_modules/@gluestack-ui/utils/lib/esm/nativewind-utils/tva/index.js
++++ b/node_modules/@gluestack-ui/utils/lib/esm/nativewind-utils/tva/index.js
+@@ -10,6 +10,33 @@ var __rest = (this && this.__rest) || function (s, e) {
+     return t;
+ };
+ import { deepMergeObjects } from '../utils/deepMerge';
++// Register the app's custom text-style tokens (tailwind.config.js fontSize:
++// micro/caption/body/title-*/display-*) in the font-size class group of the
++// twMerge that tailwind-variants runs internally. Without this, tv()
++// classifies them as text COLORS and a color class later in the merge
++// silently deletes the font size (app-wide heading shrink). Keep in sync
++// with tailwind.config.js fontSize and the twin list in ../cn/index.js.
++const customFontSizes = [
++    '2xs',
++    '10xl',
++    'micro',
++    'caption',
++    'body',
++    'title-sm',
++    'title',
++    'title-lg',
++    'display-sm',
++    'display-md',
++    'display-lg',
++    'display-xl',
++    'display-2xl',
++];
++const defaultTwMergeConfig = {
++    classGroups: {
++        'font-size': [{ text: customFontSizes }],
++    },
++};
++const withDefaultTwMergeConfig = (config) => (Object.assign(Object.assign({}, config), { twMergeConfig: Object.assign(Object.assign({}, defaultTwMergeConfig), (config === null || config === void 0 ? void 0 : config.twMergeConfig) || {}, { classGroups: Object.assign(Object.assign({}, defaultTwMergeConfig.classGroups), (((config === null || config === void 0 ? void 0 : config.twMergeConfig) || {}).classGroups || {})) }) }));
+ // @ts-ignore
+ import { tv } from 'tailwind-variants';
+ const tvatemp = (options, 
+@@ -33,7 +60,7 @@ config) => {
+             ...options.compoundVariants,
+         ];
+     }
+-    const callback = tv(options, config);
++    const callback = tv(options, withDefaultTwMergeConfig(config));
+     return (inlineProps) => {
+         const { parentVariants: inlineParentVariants = {} } = inlineProps, variant = __rest(inlineProps, ["parentVariants"]);
+         const mergedVariants = deepMergeObjects(inlineParentVariants, variant);

@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use client';
 import React from 'react';
 import { createCheckbox } from '@gluestack-ui/core/checkbox/creator';
@@ -69,13 +70,13 @@ const checkboxStyle = tva({
     size: {
       lg: 'gap-2',
       md: 'gap-2',
-      sm: 'gap-1.5',
+      sm: 'gap-1',
     },
   },
 });
 
 const checkboxIndicatorStyle = tva({
-  base: 'justify-center items-center border-outline-400 bg-transparent rounded web:data-[focus-visible=true]:outline-none web:data-[focus-visible=true]:ring-2 web:data-[focus-visible=true]:ring-indicator-primary data-[checked=true]:bg-primary-600 data-[checked=true]:border-primary-600 data-[hover=true]:data-[checked=false]:border-outline-500 data-[hover=true]:bg-transparent data-[hover=true]:data-[invalid=true]:border-error-700 data-[hover=true]:data-[checked=true]:bg-primary-700 data-[hover=true]:data-[checked=true]:border-primary-700 data-[hover=true]:data-[checked=true]:data-[disabled=true]:border-primary-600 data-[hover=true]:data-[checked=true]:data-[disabled=true]:bg-primary-600 data-[hover=true]:data-[checked=true]:data-[disabled=true]:opacity-40 data-[hover=true]:data-[checked=true]:data-[disabled=true]:data-[invalid=true]:border-error-700 data-[hover=true]:data-[disabled=true]:border-outline-400 data-[hover=true]:data-[disabled=true]:data-[invalid=true]:border-error-700 data-[active=true]:data-[checked=true]:bg-primary-800 data-[active=true]:data-[checked=true]:border-primary-800 data-[invalid=true]:border-error-700 data-[disabled=true]:opacity-40',
+  base: 'justify-center items-center border-outline-strong bg-transparent rounded-sm web:data-[focus-visible=true]:outline-none web:data-[focus-visible=true]:ring-2 web:data-[focus-visible=true]:ring-indicator-primary data-[checked=true]:bg-primary-600 data-[checked=true]:border-primary-600 data-[hover=true]:data-[checked=false]:border-outline-strong data-[hover=true]:bg-transparent data-[hover=true]:data-[invalid=true]:border-error-700 data-[hover=true]:data-[checked=true]:bg-primary-700 data-[hover=true]:data-[checked=true]:border-primary-700 data-[hover=true]:data-[checked=true]:data-[disabled=true]:border-primary-600 data-[hover=true]:data-[checked=true]:data-[disabled=true]:bg-primary-600 data-[hover=true]:data-[checked=true]:data-[disabled=true]:opacity-40 data-[hover=true]:data-[checked=true]:data-[disabled=true]:data-[invalid=true]:border-error-700 data-[hover=true]:data-[disabled=true]:border-outline-strong data-[hover=true]:data-[disabled=true]:data-[invalid=true]:border-error-700 data-[active=true]:data-[checked=true]:bg-primary-800 data-[active=true]:data-[checked=true]:border-primary-800 data-[invalid=true]:border-error-700 data-[disabled=true]:opacity-40',
   parentVariants: {
     size: {
       lg: 'w-6 h-6 border-[3px]',
@@ -86,18 +87,18 @@ const checkboxIndicatorStyle = tva({
 });
 
 const checkboxLabelStyle = tva({
-  base: 'text-typography-600 data-[checked=true]:text-typography-900 data-[hover=true]:text-typography-900 data-[hover=true]:data-[checked=true]:text-typography-900 data-[hover=true]:data-[checked=true]:data-[disabled=true]:text-typography-900 data-[hover=true]:data-[disabled=true]:text-typography-400 data-[active=true]:text-typography-900 data-[active=true]:data-[checked=true]:text-typography-900 data-[disabled=true]:opacity-40 web:select-none',
+  base: 'text-content-secondary data-[checked=true]:text-content-primary data-[hover=true]:text-content-primary data-[hover=true]:data-[checked=true]:text-content-primary data-[hover=true]:data-[checked=true]:data-[disabled=true]:text-content-primary data-[hover=true]:data-[disabled=true]:text-content-subtle data-[active=true]:text-content-primary data-[active=true]:data-[checked=true]:text-content-primary data-[disabled=true]:opacity-40 web:select-none',
   parentVariants: {
     size: {
-      lg: 'text-lg',
-      md: 'text-base',
-      sm: 'text-sm',
+      lg: 'text-title',
+      md: 'text-title-sm',
+      sm: 'text-body',
     },
   },
 });
 
 const checkboxIconStyle = tva({
-  base: 'text-typography-50 fill-none',
+  base: 'text-content-inverse fill-none',
 
   parentVariants: {
     size: {

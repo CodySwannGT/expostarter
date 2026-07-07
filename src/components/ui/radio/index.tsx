@@ -1,15 +1,12 @@
+// @ts-nocheck -- ignore this file for ts checking because it's a third party file
 'use client';
-import React from 'react';
-import { createRadio } from '@gluestack-ui/core/radio/creator';
-import { Pressable, View, Platform, Text } from 'react-native';
-import { tva } from '@gluestack-ui/utils/nativewind-utils';
-import {
-  withStyleContext,
-  useStyleContext,
-} from '@gluestack-ui/utils/nativewind-utils';
-import { cssInterop } from 'nativewind';
-import type { VariantProps } from '@gluestack-ui/utils/nativewind-utils';
 import { PrimitiveIcon, UIIcon } from '@gluestack-ui/core/icon/creator';
+import { createRadio } from '@gluestack-ui/core/radio/creator';
+import type { VariantProps } from '@gluestack-ui/utils/nativewind-utils';
+import { tva, useStyleContext, withStyleContext } from '@gluestack-ui/utils/nativewind-utils';
+import { cssInterop } from 'nativewind';
+import React from 'react';
+import { Platform, Pressable, Text, View } from 'react-native';
 
 const SCOPE = 'Radio';
 
@@ -42,7 +39,7 @@ const radioStyle = tva({
   base: 'group/radio flex-row justify-start items-center web:cursor-pointer data-[disabled=true]:web:cursor-not-allowed',
   variants: {
     size: {
-      sm: 'gap-1.5',
+      sm: 'gap-1',
       md: 'gap-2',
       lg: 'gap-2',
     },
@@ -58,7 +55,7 @@ const radioIconStyle = tva({
 
   parentVariants: {
     size: {
-      sm: 'h-[9px] w-[9px]',
+      sm: 'h-2 w-2',
       md: 'h-3 w-3',
       lg: 'h-4 w-4',
     },
@@ -66,7 +63,7 @@ const radioIconStyle = tva({
 });
 
 const radioIndicatorStyle = tva({
-  base: 'justify-center items-center bg-transparent border-outline-400 border-2 rounded-full data-[focus-visible=true]:web:outline-2 data-[focus-visible=true]:web:outline-primary-700 data-[focus-visible=true]:web:outline data-[checked=true]:border-primary-600 data-[checked=true]:bg-transparent data-[hover=true]:border-outline-500 data-[hover=true]:bg-transparent data-[hover=true]:data-[checked=true]:bg-transparent data-[hover=true]:data-[checked=true]:border-primary-700 data-[hover=true]:data-[invalid=true]:border-error-700 data-[hover=true]:data-[disabled=true]:opacity-40 data-[hover=true]:data-[disabled=true]:border-outline-400 data-[hover=true]:data-[disabled=true]:data-[invalid=true]:border-error-400 data-[active=true]:bg-transparent data-[active=true]:border-primary-800 data-[invalid=true]:border-error-700 data-[disabled=true]:opacity-40 data-[disabled=true]:data-[checked=true]:border-outline-400 data-[disabled=true]:data-[checked=true]:bg-transparent data-[disabled=true]:data-[invalid=true]:border-error-400',
+  base: 'justify-center items-center bg-transparent border-outline-strong border-2 rounded-full data-[focus-visible=true]:web:outline-2 data-[focus-visible=true]:web:outline-primary-700 data-[focus-visible=true]:web:outline data-[checked=true]:border-primary-600 data-[checked=true]:bg-transparent data-[hover=true]:border-outline-strong data-[hover=true]:bg-transparent data-[hover=true]:data-[checked=true]:bg-transparent data-[hover=true]:data-[checked=true]:border-primary-700 data-[hover=true]:data-[invalid=true]:border-error-700 data-[hover=true]:data-[disabled=true]:opacity-40 data-[hover=true]:data-[disabled=true]:border-outline-strong data-[hover=true]:data-[disabled=true]:data-[invalid=true]:border-error-400 data-[active=true]:bg-transparent data-[active=true]:border-primary-800 data-[invalid=true]:border-error-700 data-[disabled=true]:opacity-40 data-[disabled=true]:data-[checked=true]:border-outline-strong data-[disabled=true]:data-[checked=true]:bg-transparent data-[disabled=true]:data-[invalid=true]:border-error-400',
   parentVariants: {
     size: {
       sm: 'h-4 w-4',
@@ -77,20 +74,20 @@ const radioIndicatorStyle = tva({
 });
 
 const radioLabelStyle = tva({
-  base: 'text-typography-600 data-[checked=true]:text-typography-900 data-[hover=true]:text-typography-900 data-[hover=true]:data-[disabled=true]:text-typography-600 data-[hover=true]:data-[disabled=true]:data-[checked=true]:text-typography-900 data-[active=true]:text-typography-900 data-[active=true]:data-[checked=true]:text-typography-900 data-[disabled=true]:opacity-40 web:select-none',
+  base: 'text-content-secondary data-[checked=true]:text-content-primary data-[hover=true]:text-content-primary data-[hover=true]:data-[disabled=true]:text-content-secondary data-[hover=true]:data-[disabled=true]:data-[checked=true]:text-content-primary data-[active=true]:text-content-primary data-[active=true]:data-[checked=true]:text-content-primary data-[disabled=true]:opacity-40 web:select-none',
   parentVariants: {
     size: {
-      '2xs': 'text-2xs',
-      'xs': 'text-xs',
-      'sm': 'text-sm',
-      'md': 'text-base',
-      'lg': 'text-lg',
-      'xl': 'text-xl',
-      '2xl': 'text-2xl',
-      '3xl': 'text-3xl',
-      '4xl': 'text-4xl',
-      '5xl': 'text-5xl',
-      '6xl': 'text-6xl',
+      '2xs': 'text-micro',
+      'xs': 'text-caption',
+      'sm': 'text-body',
+      'md': 'text-title-sm',
+      'lg': 'text-title',
+      'xl': 'text-title-lg',
+      '2xl': 'text-display-sm',
+      '3xl': 'text-display-md',
+      '4xl': 'text-display-lg',
+      '5xl': 'text-display-xl',
+      '6xl': 'text-display-2xl',
     },
   },
 });
@@ -217,4 +214,5 @@ RadioIndicator.displayName = 'RadioIndicator';
 RadioLabel.displayName = 'RadioLabel';
 RadioIcon.displayName = 'RadioIcon';
 
-export { Radio, RadioGroup, RadioIndicator, RadioLabel, RadioIcon };
+export { Radio, RadioGroup, RadioIcon, RadioIndicator, RadioLabel };
+

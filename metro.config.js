@@ -4,6 +4,10 @@ const { withNativeWind } = require("nativewind/metro");
 const config = getSentryExpoConfig(__dirname, {
   annotateReactComponents: true,
   isCSSEnabled: true,
+  // Session Replay is not used. Without this flag the web bundle statically
+  // includes @sentry-internal/replay + replay-canvas (~135KB minified),
+  // because Metro cannot tree-shake @sentry/browser's barrel exports.
+  includeWebReplay: false,
 });
 
 /**

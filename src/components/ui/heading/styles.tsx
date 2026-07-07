@@ -20,7 +20,7 @@ export const headingStyle = tva({
       true: 'line-through',
     },
     sub: {
-      true: 'text-xs',
+      true: 'text-caption',
     },
     italic: {
       true: 'italic',
@@ -29,15 +29,15 @@ export const headingStyle = tva({
       true: 'bg-yellow-500',
     },
     size: {
-      '5xl': 'text-6xl',
-      '4xl': 'text-5xl',
-      '3xl': 'text-4xl',
-      '2xl': 'text-3xl',
-      'xl': 'text-2xl',
-      'lg': 'text-xl',
-      'md': 'text-lg',
-      'sm': 'text-base',
-      'xs': 'text-sm',
+      '5xl': 'text-display-2xl',
+      '4xl': 'text-display-xl',
+      '3xl': 'text-display-lg',
+      '2xl': 'text-display-md',
+      'xl': 'text-display-sm',
+      'lg': 'text-title-lg',
+      'md': 'text-title',
+      'sm': 'text-title-sm',
+      'xs': 'text-body',
     },
   },
 });

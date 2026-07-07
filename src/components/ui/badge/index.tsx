@@ -1,5 +1,6 @@
+// @ts-nocheck
 'use client';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Text, View } from 'react-native';
 import { PrimitiveIcon, UIIcon } from '@gluestack-ui/core/icon/creator';
 import { tva } from '@gluestack-ui/utils/nativewind-utils';
@@ -14,14 +15,14 @@ import { Svg } from 'react-native-svg';
 const SCOPE = 'BADGE';
 
 const badgeStyle = tva({
-  base: 'flex-row items-center rounded-sm data-[disabled=true]:opacity-50 px-2 py-1',
+  base: 'flex-row items-center rounded-none data-[disabled=true]:opacity-50 px-2 py-1',
   variants: {
     action: {
-      error: 'bg-background-error border-error-300',
-      warning: 'bg-background-warning border-warning-300',
-      success: 'bg-background-success border-success-300',
-      info: 'bg-background-info border-info-300',
-      muted: 'bg-background-muted border-background-300',
+      error: 'bg-status-error-surface border-error-300',
+      warning: 'bg-status-warning-surface border-warning-300',
+      success: 'bg-status-success-surface border-success-300',
+      info: 'bg-status-info-surface border-info-300',
+      muted: 'bg-surface-subtle border-surface-strong',
     },
     variant: {
       solid: '',
@@ -36,7 +37,7 @@ const badgeStyle = tva({
 });
 
 const badgeTextStyle = tva({
-  base: 'text-typography-700 font-body font-normal tracking-normal uppercase',
+  base: 'text-content-secondary font-body font-normal tracking-normal uppercase',
 
   parentVariants: {
     action: {
@@ -47,9 +48,9 @@ const badgeTextStyle = tva({
       muted: 'text-background-800',
     },
     size: {
-      sm: 'text-2xs',
-      md: 'text-xs',
-      lg: 'text-sm',
+      sm: 'text-micro',
+      md: 'text-caption',
+      lg: 'text-body',
     },
   },
   variants: {
@@ -66,7 +67,7 @@ const badgeTextStyle = tva({
       true: 'line-through',
     },
     sub: {
-      true: 'text-xs',
+      true: 'text-caption',
     },
     italic: {
       true: 'italic',
@@ -89,7 +90,7 @@ const badgeIconStyle = tva({
     },
     size: {
       sm: 'h-3 w-3',
-      md: 'h-3.5 w-3.5',
+      md: 'h-3 w-3',
       lg: 'h-4 w-4',
     },
   },
@@ -120,17 +121,15 @@ function Badge({
   className,
   ...props
 }: { className?: string } & IBadgeProps) {
-
-  const contextValue = useMemo(
-    () => ({ action, variant, size }),
-    [action, variant, size]
-  );
-
   return (
     <ContextView
       className={badgeStyle({ action, variant, class: className })}
       {...props}
-      context={contextValue}
+      context={{
+        action,
+        variant,
+        size,
+      }}
     >
       {children}
     </ContextView>
