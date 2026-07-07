@@ -10,6 +10,17 @@
 import type { Config } from "jest";
 
 const config: Config = {
+  // Design-time playground showcase data — rendered only by the prod-gated
+  // /playground route; excluded from coverage like the preset excludes
+  // *View.tsx. Gallery completeness is enforced by the design-system ESLint
+  // plugin (atom-gallery-complete / gallery-manifest-fresh), not by tests.
+  collectCoverageFrom: [
+    "!**/gallery.tsx",
+    "!**/galleryManifest.ts",
+    "!**/galleryTypes.ts",
+    "!**/galleryOverlayCard.tsx",
+  ],
+
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
   },

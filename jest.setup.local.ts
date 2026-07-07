@@ -109,6 +109,11 @@ jest.mock("react-native-safe-area-context", () => {
 // Mock NativeWind
 jest.mock("nativewind", () => ({
   styled: (component: unknown) => component,
+  // Components register className→style mappings at module scope via
+  // cssInterop/remapProps; a passthrough keeps those imports side-effect free.
+  cssInterop: (component: unknown) => component,
+  remapProps: (component: unknown) => component,
+  vars: (variables: Record<string, unknown>) => variables,
   useColorScheme: () => ({
     colorScheme: "light",
     toggleColorScheme: jest.fn(),
