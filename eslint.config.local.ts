@@ -299,6 +299,9 @@ const designSystemPlugin = {
 const ATOM_IMPORT_MESSAGE =
   "Import rendering primitives from @/components/atoms — the design library's public surface (docs/design-system-rfc.md §3)";
 
+const LUCIDE_BARREL_MESSAGE =
+  "Import icons per-icon (lucide-react-native/dist/esm/icons/<name>) — the barrel bundles every icon (~1.1MB minified) because Metro cannot tree-shake it (docs/performance.md)";
+
 export default [
   {
     files: ["**/*.tsx", "**/*.ts"],
@@ -427,6 +430,12 @@ export default [
               group: ["@expo/html-elements"],
               message: ATOM_IMPORT_MESSAGE,
             },
+            {
+              // Regex (not gitignore-style group): ban ONLY the barrel entry
+              // points — per-icon dist/esm/icons/* imports stay allowed.
+              regex: "^lucide-react-native(/icons)?$",
+              message: LUCIDE_BARREL_MESSAGE,
+            },
           ],
         },
       ],
@@ -466,6 +475,12 @@ export default [
               group: ["@apollo/*"],
               message:
                 "Atoms must not touch data clients — data fetching lives above the design library (docs/design-system-rfc.md §3)",
+            },
+            {
+              // Regex (not gitignore-style group): ban ONLY the barrel entry
+              // points — per-icon dist/esm/icons/* imports stay allowed.
+              regex: "^lucide-react-native(/icons)?$",
+              message: LUCIDE_BARREL_MESSAGE,
             },
           ],
         },

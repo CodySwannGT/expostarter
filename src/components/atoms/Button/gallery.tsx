@@ -4,7 +4,9 @@
  * tone (4), variant (3), and size (4), plus loading and icon cases.
  * @module components/atoms/Button/gallery
  */
-import { Plus } from "lucide-react-native";
+// Per-icon import: the lucide barrel would bundle every icon (~1.1MB) because
+// Metro cannot tree-shake it — see lucide-icons.d.ts at the repo root.
+import Plus from "lucide-react-native/dist/esm/icons/plus";
 
 import { Button } from ".";
 

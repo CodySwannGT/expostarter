@@ -1,12 +1,18 @@
 /**
- * Type-safe environment variable configuration using Zod validation.
+ * Type-safe environment variable configuration.
  *
  * This module validates all environment variables at module load time,
  * providing type-safe access with full TypeScript inference.
  * @remarks
  * - All client-side variables MUST use the EXPO_PUBLIC_ prefix
  * - Variables are validated regardless of source (.env, EAS, CI/CD)
- * - Add new variables to the schema below, then access via `env.VARIABLE_NAME`
+ * - Add new variables to the parsers below, then access via `env.VARIABLE_NAME`
+ * - Validation is hand-rolled (enum/url/boolean-string checks) instead of
+ *   using zod: importing zod here put ~370KB of minified validator runtime
+ *   into every bundle's entry (Metro cannot tree-shake it) to validate four
+ *   strings at startup. Feature code that needs rich schemas (e.g. forms via
+ *   `@hookform/resolvers`) should still use zod — inside the feature, where
+ *   only consumers of that feature pay for it.
  * @example
  * ```typescript
  * import { env } from "@/lib/env";
@@ -17,65 +23,123 @@
  * @see .claude/skills/expo-env-config/SKILL.md for patterns and best practices
  * @module
  */
-import { z } from "zod";
+
+/** A single validation failure: which variable and why. */
+interface EnvIssue {
+  /** The environment variable name. */
+  readonly path: string;
+  /** Human-readable failure reason. */
+  readonly message: string;
+}
+
+/** Valid application environment identifiers. */
+const APP_ENVS = ["dev", "staging", "production"] as const;
+
+/** Application environment identifier union. */
+type AppEnv = (typeof APP_ENVS)[number];
 
 /**
- * Transforms string "true"/"false" to boolean.
- * Handles case-insensitive matching.
- */
-const booleanString = z
-  .string()
-  .default("false")
-  .transform(v => v.toLowerCase() === "true");
-
-/**
- * Environment variable schema.
+ * Validated environment configuration shape.
  * @remarks
- * Add new environment variables here. Use appropriate Zod types:
- * - `z.string()` for required strings
- * - `z.string().optional()` for optional strings
- * - `z.url()` for URL validation
- * - `z.enum([...])` for constrained values
- * - `booleanString` for boolean flags from string values
+ * Add new environment variables here and validate them in {@link parseEnv}.
+ * Properties are intentionally mutable — test suites stub values on the
+ * shared `env` object (matching the previous zod-inferred type).
  */
-const envSchema = z.object({
+export interface Env {
   /**
    * Application environment identifier.
    * Determines API endpoints, feature flags, and logging behavior.
    * Note: "dev" matches the AppEnvironment type used throughout the app.
+   * Undefined indicates local development.
    */
-  EXPO_PUBLIC_APP_ENV: z.enum(["dev", "staging", "production"]).optional(),
+  EXPO_PUBLIC_APP_ENV: AppEnv | undefined;
 
   /**
    * Backend API base URL.
    * Must be a valid URL. Defaults to localhost for development.
    */
-  EXPO_PUBLIC_API_URL: z.url().optional().default("http://localhost:3000"),
+  EXPO_PUBLIC_API_URL: string;
 
   /**
    * Sentry DSN for error tracking.
    * Required in production, optional in other environments.
    */
-  EXPO_PUBLIC_SENTRY_DSN: z.url().optional(),
+  EXPO_PUBLIC_SENTRY_DSN: string | undefined;
 
   /**
    * Enable debug mode.
    * Shows additional logging and developer tools.
    */
-  EXPO_PUBLIC_DEBUG: booleanString,
-});
+  EXPO_PUBLIC_DEBUG: boolean;
+}
+
+/**
+ * Checks whether a value is a valid absolute URL.
+ * @param value - The candidate URL string.
+ * @returns True when `new URL(value)` parses.
+ */
+function isValidUrl(value: string): boolean {
+  try {
+    return Boolean(new URL(value));
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Validates the app-environment enum variable.
+ * @param value - Raw process.env value.
+ * @returns The issue, or undefined when valid/absent.
+ */
+function checkAppEnv(value: string | undefined): EnvIssue | undefined {
+  return value === undefined || (APP_ENVS as readonly string[]).includes(value)
+    ? undefined
+    : {
+        path: "EXPO_PUBLIC_APP_ENV",
+        message: `Invalid enum value. Expected one of: ${APP_ENVS.join(" | ")}`,
+      };
+}
+
+/**
+ * Validates an optional URL variable.
+ * @param name - The environment variable name (for the issue path).
+ * @param value - Raw process.env value.
+ * @returns The issue, or undefined when valid/absent.
+ */
+function checkUrl(
+  name: string,
+  value: string | undefined
+): EnvIssue | undefined {
+  return value === undefined || isValidUrl(value)
+    ? undefined
+    : { path: name, message: "Invalid URL" };
+}
+
+/**
+ * Transforms string "true"/"false" to boolean.
+ * Handles case-insensitive matching; absent values default to false.
+ * @param value - Raw process.env value.
+ * @returns The parsed boolean flag.
+ */
+function parseBooleanString(value: string | undefined): boolean {
+  return (value ?? "false").toLowerCase() === "true";
+}
 
 /**
  * Parses and validates environment variables with helpful error messages.
  * @returns Validated environment configuration
  * @throws Error with formatted message listing all validation failures
  */
-function parseEnv(): z.infer<typeof envSchema> {
-  const result = envSchema.safeParse(process.env);
+function parseEnv(): Env {
+  const issues = [
+    checkAppEnv(process.env.EXPO_PUBLIC_APP_ENV),
+    checkUrl("EXPO_PUBLIC_API_URL", process.env.EXPO_PUBLIC_API_URL),
+    checkUrl("EXPO_PUBLIC_SENTRY_DSN", process.env.EXPO_PUBLIC_SENTRY_DSN),
+  ].filter((issue): issue is EnvIssue => issue !== undefined);
 
-  if (!result.success) {
-    const formatted = result.error.issues
-      .map(issue => `  - ${issue.path.join(".")}: ${issue.message}`)
+  if (issues.length > 0) {
+    const formatted = issues
+      .map(issue => `  - ${issue.path}: ${issue.message}`)
       .join("\n");
 
     throw new Error(
@@ -83,7 +147,13 @@ function parseEnv(): z.infer<typeof envSchema> {
     );
   }
 
-  return result.data;
+  return {
+    EXPO_PUBLIC_APP_ENV: process.env.EXPO_PUBLIC_APP_ENV as AppEnv | undefined,
+    EXPO_PUBLIC_API_URL:
+      process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:3000",
+    EXPO_PUBLIC_SENTRY_DSN: process.env.EXPO_PUBLIC_SENTRY_DSN,
+    EXPO_PUBLIC_DEBUG: parseBooleanString(process.env.EXPO_PUBLIC_DEBUG),
+  };
 }
 
 /**
@@ -102,9 +172,3 @@ function parseEnv(): z.infer<typeof envSchema> {
  * ```
  */
 export const env = parseEnv();
-
-/**
- * Type representing the validated environment configuration.
- * Use this when typing functions that accept env config.
- */
-export type Env = z.infer<typeof envSchema>;

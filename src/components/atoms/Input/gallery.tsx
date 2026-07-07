@@ -4,7 +4,9 @@
  * variant (3) and size (4), plus a leading-icon case.
  * @module components/atoms/Input/gallery
  */
-import { Search } from "lucide-react-native";
+// Per-icon import: the lucide barrel would bundle every icon (~1.1MB) because
+// Metro cannot tree-shake it — see lucide-icons.d.ts at the repo root.
+import Search from "lucide-react-native/dist/esm/icons/search";
 
 import { Input } from ".";
 

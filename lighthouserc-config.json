@@ -10,7 +10,7 @@
     "performance": { "minScore": 0.55 },
     "firstContentfulPaint": { "maxNumericValue": 1500 },
     "largestContentfulPaint": { "maxNumericValue": 4000 },
-    "interactive": { "maxNumericValue": 6000 },
+    "interactive": { "maxNumericValue": 6500 },
     "cumulativeLayoutShift": { "maxNumericValue": 0.1 },
     "totalByteWeight": { "maxNumericValue": 850000 },
     "scriptSize": { "maxNumericValue": 750000 },

@@ -4,7 +4,9 @@
  * IconSize value (6) with a Lucide icon.
  * @module components/atoms/Icon/gallery
  */
-import { Star } from "lucide-react-native";
+// Per-icon import: the lucide barrel would bundle every icon (~1.1MB) because
+// Metro cannot tree-shake it — see lucide-icons.d.ts at the repo root.
+import Star from "lucide-react-native/dist/esm/icons/star";
 
 import { Icon } from ".";
 

@@ -14,10 +14,17 @@
  * @module hooks/useBottomSheetInset
  */
 
-import { useReactiveVar } from "@apollo/client";
+import { useSyncExternalStore } from "react";
 import { Platform, type StyleProp, type ViewStyle } from "react-native";
 
 import { bottomSafeAreaInsetVar } from "@/stores/safeAreaInsets";
+
+/**
+ * Snapshot reader for `useSyncExternalStore` — also the server snapshot
+ * during static rendering (the inset is 0 before hydration).
+ * @returns The captured bottom safe-area inset in device px.
+ */
+const getBottomInsetSnapshot = (): number => bottomSafeAreaInsetVar();
 
 /**
  * Bottom padding a portal-rendered sheet needs to clear the Android system
@@ -26,7 +33,11 @@ import { bottomSafeAreaInsetVar } from "@/stores/safeAreaInsets";
  * devices without a bottom system bar.
  */
 export const useBottomSheetInset = (): number => {
-  const bottomInset = useReactiveVar(bottomSafeAreaInsetVar);
+  const bottomInset = useSyncExternalStore(
+    bottomSafeAreaInsetVar.subscribe,
+    getBottomInsetSnapshot,
+    getBottomInsetSnapshot
+  );
   return Platform.OS === "android" ? bottomInset : 0;
 };
 

@@ -6,7 +6,7 @@
  * `bottomSafeAreaInsetVar` reactive var captured at the app root.
  * @module hooks/__tests__/useBottomSheetInset.test
  */
-import { renderHook } from "@testing-library/react-native";
+import { act, renderHook } from "@testing-library/react-native";
 import { Platform } from "react-native";
 
 import { bottomSafeAreaInsetVar } from "@/stores/safeAreaInsets";
@@ -37,6 +37,20 @@ describe("useBottomSheetInset", () => {
     bottomSafeAreaInsetVar(24);
 
     const { result } = renderHook(() => useBottomSheetInset());
+
+    expect(result.current).toBe(24);
+  });
+
+  it("re-renders with the new inset when the captured value changes", () => {
+    setPlatformOS("android");
+    bottomSafeAreaInsetVar(10);
+
+    const { result } = renderHook(() => useBottomSheetInset());
+    expect(result.current).toBe(10);
+
+    act(() => {
+      bottomSafeAreaInsetVar(24);
+    });
 
     expect(result.current).toBe(24);
   });
