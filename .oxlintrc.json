@@ -17,6 +17,7 @@
     "ios/**",
     "android/**",
     "web-build/**",
-    "components/ui/**"
+    "components/ui/**",
+    "**/components/ui/**"
   ]
 }

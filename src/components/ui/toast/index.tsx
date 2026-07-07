@@ -26,7 +26,7 @@ const SCOPE = 'TOAST';
 cssInterop(MotionView, { className: 'style' });
 
 const toastStyle = tva({
-  base: 'p-4 m-1 rounded-md gap-1 web:pointer-events-auto shadow-hard-5 border-outline-100',
+  base: 'p-4 m-1 rounded-sm gap-1 web:pointer-events-auto shadow-hard-5 border-outline-subtle',
   variants: {
     action: {
       error: 'bg-error-800',
@@ -38,13 +38,13 @@ const toastStyle = tva({
 
     variant: {
       solid: '',
-      outline: 'border bg-background-0',
+      outline: 'border bg-surface-base',
     },
   },
 });
 
 const toastTitleStyle = tva({
-  base: 'text-typography-0 font-medium font-body tracking-md text-left',
+  base: 'text-content-inverse font-medium font-body tracking-md text-left',
   variants: {
     isTruncated: {
       true: '',
@@ -59,17 +59,17 @@ const toastTitleStyle = tva({
       true: 'line-through',
     },
     size: {
-      '2xs': 'text-2xs',
-      'xs': 'text-xs',
-      'sm': 'text-sm',
-      'md': 'text-base',
-      'lg': 'text-lg',
-      'xl': 'text-xl',
-      '2xl': 'text-2xl',
-      '3xl': 'text-3xl',
-      '4xl': 'text-4xl',
-      '5xl': 'text-5xl',
-      '6xl': 'text-6xl',
+      '2xs': 'text-micro',
+      'xs': 'text-caption',
+      'sm': 'text-body',
+      'md': 'text-title-sm',
+      'lg': 'text-title',
+      'xl': 'text-title-lg',
+      '2xl': 'text-display-sm',
+      '3xl': 'text-display-md',
+      '4xl': 'text-display-lg',
+      '5xl': 'text-display-xl',
+      '6xl': 'text-display-2xl',
     },
   },
   parentVariants: {
@@ -130,23 +130,23 @@ const toastDescriptionStyle = tva({
       true: 'line-through',
     },
     size: {
-      '2xs': 'text-2xs',
-      'xs': 'text-xs',
-      'sm': 'text-sm',
-      'md': 'text-base',
-      'lg': 'text-lg',
-      'xl': 'text-xl',
-      '2xl': 'text-2xl',
-      '3xl': 'text-3xl',
-      '4xl': 'text-4xl',
-      '5xl': 'text-5xl',
-      '6xl': 'text-6xl',
+      '2xs': 'text-micro',
+      'xs': 'text-caption',
+      'sm': 'text-body',
+      'md': 'text-title-sm',
+      'lg': 'text-title',
+      'xl': 'text-title-lg',
+      '2xl': 'text-display-sm',
+      '3xl': 'text-display-md',
+      '4xl': 'text-display-lg',
+      '5xl': 'text-display-xl',
+      '6xl': 'text-display-2xl',
     },
   },
   parentVariants: {
     variant: {
-      solid: 'text-typography-50',
-      outline: 'text-typography-900',
+      solid: 'text-content-inverse',
+      outline: 'text-content-primary',
     },
   },
 });

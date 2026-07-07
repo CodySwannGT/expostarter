@@ -31,11 +31,11 @@ const tooltipStyle = tva({
 });
 
 const tooltipContentStyle = tva({
-  base: 'py-1 px-3 rounded-sm bg-background-900 web:pointer-events-auto',
+  base: 'py-1 px-3 rounded-none bg-background-900 web:pointer-events-auto',
 });
 
 const tooltipTextStyle = tva({
-  base: 'font-normal tracking-normal web:select-none text-xs text-typography-50',
+  base: 'font-normal tracking-normal web:select-none text-caption text-content-inverse',
 
   variants: {
     isTruncated: {
@@ -51,20 +51,20 @@ const tooltipTextStyle = tva({
       true: 'line-through',
     },
     size: {
-      '2xs': 'text-2xs',
-      'xs': 'text-xs',
-      'sm': 'text-sm',
-      'md': 'text-base',
-      'lg': 'text-lg',
-      'xl': 'text-xl',
-      '2xl': 'text-2xl',
-      '3xl': 'text-3xl',
-      '4xl': 'text-4xl',
-      '5xl': 'text-5xl',
-      '6xl': 'text-6xl',
+      '2xs': 'text-micro',
+      'xs': 'text-caption',
+      'sm': 'text-body',
+      'md': 'text-title-sm',
+      'lg': 'text-title',
+      'xl': 'text-title-lg',
+      '2xl': 'text-display-sm',
+      '3xl': 'text-display-md',
+      '4xl': 'text-display-lg',
+      '5xl': 'text-display-xl',
+      '6xl': 'text-display-2xl',
     },
     sub: {
-      true: 'text-xs',
+      true: 'text-caption',
     },
     italic: {
       true: 'italic',

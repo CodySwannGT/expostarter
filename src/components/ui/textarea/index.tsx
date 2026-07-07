@@ -16,7 +16,7 @@ const UITextarea = createTextarea({
 });
 
 const textareaStyle = tva({
-  base: 'w-full h-[100px] border border-background-300 rounded data-[hover=true]:border-outline-400 data-[focus=true]:border-primary-700 data-[focus=true]:data-[hover=true]:border-primary-700 data-[disabled=true]:opacity-40 data-[disabled=true]:bg-background-50 data-[disabled=true]:data-[hover=true]:border-background-300',
+  base: 'w-full h-24 border border-surface-strong rounded-sm data-[hover=true]:border-outline-strong data-[focus=true]:border-primary-700 data-[focus=true]:data-[hover=true]:border-primary-700 data-[disabled=true]:opacity-40 data-[disabled=true]:bg-surface-raised data-[disabled=true]:data-[hover=true]:border-surface-strong',
 
   variants: {
     variant: {
@@ -33,13 +33,13 @@ const textareaStyle = tva({
 });
 
 const textareaInputStyle = tva({
-  base: 'p-2 web:outline-0 web:outline-none flex-1 color-typography-900 placeholder:text-typography-500 web:cursor-text web:data-[disabled=true]:cursor-not-allowed',
+  base: 'p-2 web:outline-0 web:outline-none flex-1 color-typography-900 placeholder:text-content-muted web:cursor-text web:data-[disabled=true]:cursor-not-allowed',
   parentVariants: {
     size: {
-      sm: 'text-sm',
-      md: 'text-base',
-      lg: 'text-lg',
-      xl: 'text-xl',
+      sm: 'text-body',
+      md: 'text-title-sm',
+      lg: 'text-title',
+      xl: 'text-title-lg',
     },
   },
 });

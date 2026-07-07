@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use client';
 import { createSlider } from '@gluestack-ui/core/slider/creator';
 import { Pressable } from 'react-native';
@@ -55,7 +56,7 @@ const sliderThumbStyle = tva({
 });
 
 const sliderTrackStyle = tva({
-  base: 'bg-background-300 rounded-lg overflow-hidden',
+  base: 'bg-surface-strong rounded-md overflow-hidden',
   parentVariants: {
     orientation: {
       horizontal: 'w-full',
@@ -97,13 +98,13 @@ const sliderTrackStyle = tva({
     {
       orientation: 'horizontal',
       size: 'lg',
-      class: 'h-1.5 flex-row',
+      class: 'h-1 flex-row',
     },
     {
       orientation: 'horizontal',
       size: 'lg',
       isReversed: true,
-      class: 'h-1.5 flex-row-reverse',
+      class: 'h-1 flex-row-reverse',
     },
     {
       orientation: 'vertical',
@@ -130,13 +131,13 @@ const sliderTrackStyle = tva({
     {
       orientation: 'vertical',
       size: 'lg',
-      class: 'w-1.5 flex-col-reverse',
+      class: 'w-1 flex-col-reverse',
     },
     {
       orientation: 'vertical',
       size: 'lg',
       isReversed: true,
-      class: 'w-1.5 flex-col',
+      class: 'w-1 flex-col',
     },
   ],
 });

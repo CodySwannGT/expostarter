@@ -21,6 +21,7 @@ import {
 } from '@gluestack-ui/utils/nativewind-utils';
 import { cssInterop } from 'nativewind';
 import type { VariantProps } from '@gluestack-ui/utils/nativewind-utils';
+import { useBottomSheetInsetStyle } from '@/hooks/useBottomSheetInset';
 
 type IAnimatedPressableProps = React.ComponentProps<typeof Pressable> &
   MotionComponentProps<typeof Pressable, ViewStyle, unknown, unknown, unknown>;
@@ -77,11 +78,11 @@ const drawerStyle = tva({
 });
 
 const drawerBackdropStyle = tva({
-  base: 'absolute left-0 top-0 right-0 bottom-0 bg-background-dark web:cursor-default',
+  base: 'absolute left-0 top-0 right-0 bottom-0 bg-surface-inverse web:cursor-default',
 });
 
 const drawerContentStyle = tva({
-  base: 'bg-background-0 overflow-scroll border-outline-100 p-6 absolute',
+  base: 'bg-surface-base overflow-scroll border-outline-subtle p-6 absolute',
   parentVariants: {
     size: {
       sm: 'w-1/4',
@@ -141,7 +142,7 @@ const drawerContentStyle = tva({
 });
 
 const drawerCloseButtonStyle = tva({
-  base: 'z-10 rounded data-[focus-visible=true]:web:bg-background-100 web:outline-0 cursor-pointer',
+  base: 'z-10 rounded-sm data-[focus-visible=true]:web:bg-surface-subtle web:outline-0 cursor-pointer',
 });
 
 const drawerHeaderStyle = tva({
@@ -308,11 +309,14 @@ const DrawerBody = React.forwardRef<
 const DrawerFooter = React.forwardRef<
   React.ComponentRef<typeof UIDrawer.Footer>,
   IDrawerFooterProps
->(function DrawerFooter({ className, ...props }, ref) {
+>(function DrawerFooter({ className, style, ...props }, ref) {
+  // Portal-rendered: add the Android system nav-bar inset so footer actions
+  // (e.g. 'Show Results') are not covered. iOS unaffected (hook returns 0).
   return (
     <UIDrawer.Footer
       ref={ref}
       {...props}
+      style={useBottomSheetInsetStyle(style)}
       className={drawerFooterStyle({
         class: className,
       })}

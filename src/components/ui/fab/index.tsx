@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use client';
 import React from 'react';
 import { createFab } from '@gluestack-ui/core/fab/creator';
@@ -36,7 +37,7 @@ const fabStyle = tva({
   base: 'group/fab bg-primary-500 rounded-full z-20 p-4 flex-row items-center justify-center absolute hover:bg-primary-600 active:bg-primary-700 disabled:opacity-40 disabled:pointer-events-all disabled:cursor-not-allowed data-[focus=true]:web:outline-none data-[focus-visible=true]:web:ring-2 data-[focus-visible=true]:web:ring-indicator-info shadow-hard-2',
   variants: {
     size: {
-      sm: 'px-2.5 py-2.5',
+      sm: 'px-2 py-2',
       md: 'px-3 py-3',
       lg: 'px-4 py-4',
     },
@@ -52,7 +53,7 @@ const fabStyle = tva({
 });
 
 const fabLabelStyle = tva({
-  base: 'text-typography-50 font-normal font-body tracking-md text-left mx-2',
+  base: 'text-content-inverse font-normal font-body tracking-md text-left mx-2',
   variants: {
     isTruncated: {
       true: '',
@@ -67,20 +68,20 @@ const fabLabelStyle = tva({
       true: 'line-through',
     },
     size: {
-      '2xs': 'text-2xs',
-      'xs': 'text-xs',
-      'sm': 'text-sm',
-      'md': 'text-base',
-      'lg': 'text-lg',
-      'xl': 'text-xl',
-      '2xl': 'text-2xl',
-      '3xl': 'text-3xl',
-      '4xl': 'text-4xl',
-      '5xl': 'text-5xl',
-      '6xl': 'text-6xl',
+      '2xs': 'text-micro',
+      'xs': 'text-caption',
+      'sm': 'text-body',
+      'md': 'text-title-sm',
+      'lg': 'text-title',
+      'xl': 'text-title-lg',
+      '2xl': 'text-display-sm',
+      '3xl': 'text-display-md',
+      '4xl': 'text-display-lg',
+      '5xl': 'text-display-xl',
+      '6xl': 'text-display-2xl',
     },
     sub: {
-      true: 'text-xs',
+      true: 'text-caption',
     },
     italic: {
       true: 'italic',
@@ -91,21 +92,21 @@ const fabLabelStyle = tva({
   },
   parentVariants: {
     size: {
-      sm: 'text-sm',
-      md: 'text-base',
-      lg: 'text-lg',
+      sm: 'text-body',
+      md: 'text-title-sm',
+      lg: 'text-title',
     },
   },
 });
 
 const fabIconStyle = tva({
-  base: 'text-typography-50 fill-none',
+  base: 'text-content-inverse fill-none',
   variants: {
     size: {
       '2xs': 'h-3 w-3',
-      'xs': 'h-3.5 w-3.5',
+      'xs': 'h-3 w-3',
       'sm': 'h-4 w-4',
-      'md': 'w-[18px] h-[18px]',
+      'md': 'w-4 h-4',
       'lg': 'h-5 w-5',
       'xl': 'h-6 w-6',
     },

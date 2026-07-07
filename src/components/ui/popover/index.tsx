@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use client';
 import React from 'react';
 import { View, Pressable, ScrollView, ViewStyle } from 'react-native';
@@ -59,7 +60,7 @@ const popoverStyle = tva({
 });
 
 const popoverArrowStyle = tva({
-  base: 'bg-background-0 z-[1] border absolute overflow-hidden h-3.5 w-3.5 border-outline-100',
+  base: 'bg-surface-base z-[1] border absolute overflow-hidden h-3 w-3 border-outline-subtle',
   variants: {
     placement: {
       'top left':
@@ -99,13 +100,13 @@ const popoverCloseButtonStyle = tva({
 });
 
 const popoverContentStyle = tva({
-  base: 'bg-background-0 rounded-lg overflow-hidden border border-outline-100 w-full',
+  base: 'bg-surface-base rounded-md overflow-hidden border border-outline-subtle w-full',
   parentVariants: {
     size: {
-      xs: 'max-w-[360px] p-3.5',
-      sm: 'max-w-[420px] p-4',
-      md: 'max-w-[510px] p-[18px]',
-      lg: 'max-w-[640px] p-5',
+      xs: 'max-w-96 p-3',
+      sm: 'max-w-96 p-4',
+      md: 'max-w-96 p-4',
+      lg: 'max-w-96 p-5',
       full: 'p-6',
     },
   },

@@ -19,10 +19,23 @@ jest.mock("@/components/ui/gluestack-ui-provider", () => ({
 }));
 
 // Mock ErrorBoundary
-jest.mock("@/components/shared/ErrorBoundary", () => ({
-  ErrorBoundary: ({ children }: { children: React.ReactNode }) => (
+jest.mock("@/components/molecules/ErrorBoundary", () => ({
+  __esModule: true,
+  default: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}));
+
+// Mock ThemeProvider (AsyncStorage-backed)
+jest.mock("@/providers/ThemeProvider", () => ({
+  ThemeProvider: ({ children }: { children: React.ReactNode }) => (
     <>{children}</>
   ),
+  useTheme: () => ({
+    mode: "system",
+    resolvedTheme: "light",
+    setMode: jest.fn(),
+    toggleTheme: jest.fn(),
+    isLoaded: true,
+  }),
 }));
 
 // Mock Sentry navigation tracking hook

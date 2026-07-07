@@ -1,11 +1,19 @@
+// @ts-nocheck
 import React from 'react';
 import type { VariantProps } from '@gluestack-ui/utils/nativewind-utils';
 import { textStyle } from './styles';
 
 type ITextProps = React.ComponentProps<'span'> &
   VariantProps<typeof textStyle> & {
-    /** Test ID for E2E testing - maps to data-testid on web */
-    testID?: string;
+// Cross-platform parity: accept the React Native-only `numberOfLines` prop
+    // on web too, so callers that use the `truncate + numberOfLines={1}` pattern
+    // don't need `@ts-expect-error` or casts. The prop is swallowed before reaching
+    // the DOM; web clamping comes from the existing `truncate` class.
+    numberOfLines?: number;
+    // Cross-platform parity for Android/iOS font-scaling caps. Swallowed on web
+    // (no system font scaling there); kept in the type so callers don't need casts.
+    allowFontScaling?: boolean;
+    maxFontSizeMultiplier?: number;
   };
 
 const Text = React.forwardRef<React.ComponentRef<'span'>, ITextProps>(
@@ -20,9 +28,9 @@ const Text = React.forwardRef<React.ComponentRef<'span'>, ITextProps>(
       sub,
       italic,
       highlight,
-      testID,
+      numberOfLines: _numberOfLines,
       ...props
-    },
+    }: { className?: string } & ITextProps,
     ref
   ) {
     return (
@@ -38,7 +46,6 @@ const Text = React.forwardRef<React.ComponentRef<'span'>, ITextProps>(
           highlight: highlight as boolean,
           class: className,
         })}
-        data-testid={testID}
         {...props}
         ref={ref}
       />

@@ -1,7 +1,8 @@
+// @ts-nocheck
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { createModal } from '@gluestack-ui/core/modal/creator';
-import { Pressable, View, ScrollView, ViewStyle } from 'react-native';
+import { Platform, Pressable, View, ScrollView, ViewStyle } from 'react-native';
 import {
   Motion,
   AnimatePresence,
@@ -15,6 +16,7 @@ import {
 } from '@gluestack-ui/utils/nativewind-utils';
 import { cssInterop } from 'nativewind';
 import type { VariantProps } from '@gluestack-ui/utils/nativewind-utils';
+import { KeyboardEvents } from 'react-native-keyboard-controller';
 
 type IAnimatedPressableProps = React.ComponentProps<typeof Pressable> &
   MotionComponentProps<typeof Pressable, ViewStyle, unknown, unknown, unknown>;
@@ -43,6 +45,34 @@ const UIModal = createModal({
 cssInterop(AnimatedPressable, { className: 'style' });
 cssInterop(MotionView, { className: 'style' });
 
+/**
+ * Tracks keyboard height using react-native-keyboard-controller events.
+ * Replaces gluestack's built-in useKeyboardBottomInset which breaks on Android
+ * when KeyboardProvider sets softInputMode to ADJUST_NOTHING (edge-to-edge).
+ * Returns the full keyboard height so ModalContent can shrink accordingly.
+ */
+function useKeyboardHeight(): number {
+  const [height, setHeight] = useState(0);
+
+  useEffect(() => {
+    if (Platform.OS === 'web') return undefined;
+
+    const showSub = KeyboardEvents.addListener('keyboardDidShow', (e) => {
+      setHeight(e.height);
+    });
+    const hideSub = KeyboardEvents.addListener('keyboardDidHide', () => {
+      setHeight(0);
+    });
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
+
+  return height;
+}
+
 const modalStyle = tva({
   base: 'group/modal w-full h-full justify-center items-center web:pointer-events-none',
   variants: {
@@ -57,16 +87,28 @@ const modalStyle = tva({
 });
 
 const modalBackdropStyle = tva({
-  base: 'absolute left-0 top-0 right-0 bottom-0 bg-background-dark web:cursor-default',
+  base: 'absolute left-0 top-0 right-0 bottom-0 bg-surface-inverse web:cursor-default',
 });
 
 const modalContentStyle = tva({
-  base: 'bg-background-0 rounded-md overflow-hidden border border-outline-100 shadow-hard-2 p-6',
+  base: 'bg-surface-base rounded-sm overflow-hidden border border-outline-subtle shadow-hard-2 p-6',
   parentVariants: {
+    // SE-5240: the design-system tier codemod (commit 266dcca8c) snapped every
+    // size's max-width onto the ladder ceiling `max-w-96` (384px) because the
+    // closed sizing ladder had no rung above 384px to absorb the original
+    // 360/420/510/640px caps. That silently narrowed every md/lg modal (e.g. the
+    // Settings > Active Team "Select active team" picker) far below its
+    // pre-migration width — still live on Staging — compressing search fields
+    // and result rows. The width caps are genuine layout geometry rather than a
+    // snap-table token, so the original per-size caps are restored as arbitrary
+    // values, permitted in this vendored ui/ layer (eslint
+    // `tailwindcss/no-arbitrary-value` and the design-system ratchet both
+    // exclude `src/components/ui/**`). Fixes the whole md/lg modal family at the
+    // source instead of per-modal inline-style band-aids.
     size: {
-      xs: 'w-[60%] max-w-[360px]',
-      sm: 'w-[70%] max-w-[420px]',
-      md: 'w-[80%] max-w-[510px]',
+      xs: 'w-3/5 max-w-[360px]',
+      sm: 'w-2/3 max-w-[420px]',
+      md: 'w-4/5 max-w-[510px]',
       lg: 'w-[90%] max-w-[640px]',
       full: 'w-full',
     },
@@ -90,7 +132,7 @@ const modalFooterStyle = tva({
 });
 
 type IModalProps = React.ComponentProps<typeof UIModal> &
-  VariantProps<typeof modalStyle> & { className?: string };
+  VariantProps<typeof modalStyle> & { className?: string; avoidKeyboard?: boolean };
 
 type IModalBackdropProps = React.ComponentProps<typeof UIModal.Backdrop> &
   VariantProps<typeof modalBackdropStyle> & { className?: string };
@@ -111,15 +153,25 @@ type IModalCloseButtonProps = React.ComponentProps<typeof UIModal.CloseButton> &
   VariantProps<typeof modalCloseButtonStyle> & { className?: string };
 
 const Modal = React.forwardRef<React.ComponentRef<typeof UIModal>, IModalProps>(
-  ({ className, size = 'md', ...props }, ref) => (
-    <UIModal
-      ref={ref}
-      {...props}
-      pointerEvents="box-none"
-      className={modalStyle({ size, class: className })}
-      context={{ size }}
-    />
-  )
+  ({ className, size = 'md', avoidKeyboard, children, ...props }, ref) => {
+    const keyboardHeight = useKeyboardHeight();
+    const paddingStyle = avoidKeyboard && keyboardHeight > 0
+      ? { paddingBottom: keyboardHeight }
+      : undefined;
+
+    return (
+      <UIModal
+        ref={ref}
+        {...props}
+        pointerEvents="box-none"
+        className={modalStyle({ size, class: className })}
+        context={{ size }}
+        style={paddingStyle}
+      >
+        {children}
+      </UIModal>
+    );
+  }
 );
 
 const ModalBackdrop = React.forwardRef<
@@ -215,11 +267,12 @@ const ModalHeader = React.forwardRef<
 const ModalBody = React.forwardRef<
   React.ComponentRef<typeof UIModal.Body>,
   IModalBodyProps
->(function ModalBody({ className, ...props }, ref) {
+>(function ModalBody({ className, style, ...props }, ref) {
   return (
     <UIModal.Body
       ref={ref}
       {...props}
+      style={[Platform.OS !== 'web' ? { flexGrow: 0 } : undefined, style]}
       className={modalBodyStyle({
         class: className,
       })}

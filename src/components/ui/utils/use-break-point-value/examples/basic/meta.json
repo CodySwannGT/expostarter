@@ -1,9 +1,0 @@
-{
-  "argTypes": {},
-  "reactLive": {
-    "useBreakpointValue": "@gluestack-ui/utils/hooks",
-    "VStack": "@/components/ui/vstack",
-    "Box": "@/components/ui/box",
-    "Text": "@/components/ui/text"
-  }
-}
