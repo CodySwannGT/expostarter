@@ -16,23 +16,30 @@
  * @see https://eslint.org/docs/latest/use/configure/configuration-files-new
  * @module eslint.config.local
  */
-import { createRequire } from "node:module";
+import { createHash } from "node:crypto";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import tailwindcss from "eslint-plugin-tailwindcss";
+import betterTailwind from "eslint-plugin-better-tailwindcss";
 
+import { SEMANTIC_COLORS, CHART_COLORS } from "./src/design-system/tokens";
+
+const REPO_ROOT = path.dirname(fileURLToPath(import.meta.url));
+/** Tailwind 4 is CSS-first; the design tokens live in global.css, generated from tokens.ts. */
+const GLOBAL_CSS_PATH = path.join(REPO_ROOT, "src", "global.css");
 /**
- * Absolute path to the tailwind config. eslint-plugin-tailwindcss (via
- * tailwind-api-utils) resolves the `tailwindcss` package relative to the
- * dirname of this path, so a bare relative "tailwind.config.js" breaks
- * module resolution ("Could not resolve tailwindcss").
+ * Whitespace-normalized short hash — mirrors
+ * scripts/design-system/generate-global-css.mjs so global-css-fresh can verify
+ * global.css was regenerated from tokens.ts.
+ * @param source The text to hash (whitespace is stripped first).
+ * @returns The first 16 hex chars of the sha256 digest.
  */
-const TAILWIND_CONFIG_PATH = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  "tailwind.config.js"
-);
+const normHash = (source: string): string =>
+  createHash("sha256")
+    .update(source.replace(/\s+/g, ""))
+    .digest("hex")
+    .slice(0, 16);
 
 /** Ban UNSAFE_style JSX attribute in app code — use closed-token className on an atom instead. */
 const NO_UNSAFE_STYLE = [
@@ -71,7 +78,6 @@ const NO_PROCESS_ENV = [
  *    genuinely gallery-less atom carries a local, single-line ESLint disable
  *    comment for design-system/atom-gallery-complete (with a "-- reason").
  */
-const dsRequire = createRequire(import.meta.url);
 const ATOMS_DIR = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "src",
@@ -89,25 +95,6 @@ const ALLOWED_CHART_KEYS = [
   "down",
 ];
 const SEMANTIC_OUTLINE = ["subtle", "default", "strong", "emphasis"];
-
-/**
- * Loads tailwind.config.js `theme.extend.colors` via jiti (TS-aware), because
- * tailwind.config.js requires the TypeScript module src/config/colors.ts, so
- * a plain require would fail.
- * @returns Resolved semantic color groups, or null if the config can't load.
- */
-function loadTailwindColors(): Record<string, Record<string, unknown>> | null {
-  try {
-    const jiti = dsRequire("jiti")(fileURLToPath(import.meta.url), {
-      interopDefault: true,
-    });
-    const config = jiti(TAILWIND_CONFIG_PATH);
-    const colors = config?.theme?.extend?.colors;
-    return colors ? (colors as Record<string, Record<string, unknown>>) : null;
-  } catch {
-    return null;
-  }
-}
 
 /**
  * Atom directories (sorted) that ship a gallery.tsx — mirrors the generator.
@@ -148,35 +135,26 @@ const designSystemPlugin = {
       create(context: DesignRuleContext) {
         return {
           Program(node: unknown) {
-            const colors = loadTailwindColors();
-            if (!colors) {
-              context.report({
-                node,
-                message:
-                  "design-system: could not load tailwind colors for the semantic-token budget (jiti load of tailwind.config.js failed).",
-              });
-              return;
-            }
-            const size = (obj?: Record<string, unknown>): number =>
-              Object.keys(obj ?? {}).length;
-            const status = Object.keys(colors.status ?? {}).filter(
+            // Tokens now resolve from src/design-system/tokens.ts (the source
+            // of truth global.css is generated from) — tailwind.config.js is
+            // gone under Tailwind 4. The rule anchors on src/components/atoms/
+            // index.ts, so a static import can't fail (no jiti / null branch).
+            const size = (obj: Record<string, unknown>): number =>
+              Object.keys(obj).length;
+            const status = Object.keys(SEMANTIC_COLORS.status).filter(
               key => !key.endsWith("-surface")
             ).length;
-            const outlineKeys = Object.keys(colors.outline ?? {});
+            const outlineKeys = Object.keys(SEMANTIC_COLORS.outline);
             const outline = SEMANTIC_OUTLINE.filter(key =>
               outlineKeys.includes(key)
             );
-            // Raw palette shade keys (numeric strings like "0", "50", "100"…) are
-            // expected alongside the semantic aliases — they are the underlying
-            // palette the aliases reference. Only flag non-numeric keys that are
-            // not in SEMANTIC_OUTLINE (e.g. an accidental extra semantic alias).
             const extraOutline = outlineKeys.filter(
-              key => !SEMANTIC_OUTLINE.includes(key) && isNaN(Number(key))
+              key => !SEMANTIC_OUTLINE.includes(key)
             );
             const total =
-              size(colors.content) +
-              size(colors.surface) +
-              size(colors.accent) +
+              size(SEMANTIC_COLORS.content) +
+              size(SEMANTIC_COLORS.surface) +
+              size(SEMANTIC_COLORS.accent) +
               status +
               outline.length;
             if (total < MIN_SEMANTIC_TOKENS || total > MAX_SEMANTIC_TOKENS) {
@@ -188,7 +166,7 @@ const designSystemPlugin = {
             if (outline.length !== SEMANTIC_OUTLINE.length) {
               context.report({
                 node,
-                message: `design-system: semantic outline names missing from the tailwind outline family — expected ${SEMANTIC_OUTLINE.join(", ")}, found ${outline.join(", ") || "none"}.`,
+                message: `design-system: semantic outline names missing from SEMANTIC_COLORS.outline in tokens.ts — expected ${SEMANTIC_OUTLINE.join(", ")}, found ${outline.join(", ") || "none"}.`,
               });
             }
             if (extraOutline.length > 0) {
@@ -197,13 +175,56 @@ const designSystemPlugin = {
                 message: `design-system: semantic outline family has unexpected key(s): ${extraOutline.join(", ")}. Allowed: ${SEMANTIC_OUTLINE.join(", ")} (docs/design-system/tokens.md, RFC §5).`,
               });
             }
-            const offenders = Object.keys(colors.chart ?? {}).filter(
+            const offenders = Object.keys(CHART_COLORS).filter(
               key => !ALLOWED_CHART_KEYS.includes(key)
             );
             if (offenders.length > 0) {
               context.report({
                 node,
                 message: `design-system: chart annex is a closed palette — unexpected key(s) ${offenders.join(", ")}. Allowed: ${ALLOWED_CHART_KEYS.join(", ")} (docs/design-system/tokens.md, decision #2).`,
+              });
+            }
+          },
+        };
+      },
+    },
+    "global-css-fresh": {
+      meta: {
+        type: "problem",
+        docs: {
+          description:
+            "src/global.css is regenerated from tokens.ts (no drift).",
+        },
+        schema: [],
+      },
+      create(context: DesignRuleContext) {
+        return {
+          Program(node: unknown) {
+            // Anchored on src/design-system/tokens.ts. Verifies the generated
+            // global.css header hashes still match tokens.ts + the css body.
+            const css = existsSync(GLOBAL_CSS_PATH)
+              ? readFileSync(GLOBAL_CSS_PATH, "utf8")
+              : null;
+            if (css === null) {
+              context.report({
+                node,
+                message:
+                  "design-system: src/global.css is missing — run `bun run design:css`.",
+              });
+              return;
+            }
+            const tokensHash = /tokens-hash:\s*([0-9a-f]+)/.exec(css)?.[1];
+            const bodyHash = /body-hash:\s*([0-9a-f]+)/.exec(css)?.[1];
+            const headerEnd = css.indexOf("*/");
+            const body = headerEnd >= 0 ? css.slice(headerEnd + 2) : css;
+            if (
+              tokensHash !== normHash(context.sourceCode.getText()) ||
+              bodyHash !== normHash(body)
+            ) {
+              context.report({
+                node,
+                message:
+                  "design-system: src/global.css is stale relative to src/design-system/tokens.ts — run `bun run design:css` and commit the result.",
               });
             }
           },
@@ -303,6 +324,26 @@ const LUCIDE_BARREL_MESSAGE =
   "Import icons per-icon (lucide-react-native/dist/esm/icons/<name>) — the barrel bundles every icon (~1.1MB minified) because Metro cannot tree-shake it (docs/performance.md)";
 
 export default [
+  /**
+   * Tailwind 4 migration: the Lisa base config (getExpoConfig) enables
+   * eslint-plugin-tailwindcss (Tailwind 3 only), which can no longer resolve a
+   * config under Tailwind 4 ("Cannot resolve default tailwindcss config
+   * path"). Those rules are superseded by the eslint-plugin-better-tailwindcss
+   * block below (no-unknown-classes / no-restricted-classes), so turn the
+   * legacy plugin's rules off repo-wide to silence it and avoid double-linting.
+   */
+  {
+    rules: {
+      "tailwindcss/classnames-order": "off",
+      "tailwindcss/enforces-negative-arbitrary-values": "off",
+      "tailwindcss/enforces-shorthand": "off",
+      "tailwindcss/migration-from-tailwind-2": "off",
+      "tailwindcss/no-arbitrary-value": "off",
+      "tailwindcss/no-custom-classname": "off",
+      "tailwindcss/no-contradicting-classname": "off",
+      "tailwindcss/no-unnecessary-arbitrary-value": "off",
+    },
+  },
   {
     files: ["**/*.tsx", "**/*.ts"],
     rules: {
@@ -343,29 +384,31 @@ export default [
    * ratchet machinery — this is a greenfield starter, sealed from day one.
    */
   /**
-   * §5 — eslint-plugin-tailwindcss: kills arbitrary values (`w-[120px]`)
-   * and off-manifest classnames. Whitelist covers Gluestack
-   * `data-[...]`/`group-[...]` state selectors and the semantic token tier
-   * (content/surface/accent/status/outline/chart) defined in
-   * tailwind.config.js.
+   * §5 — eslint-plugin-better-tailwindcss (Tailwind 4 / CSS-first): kills
+   * off-manifest classnames and arbitrary values. `no-unknown-classes` reads
+   * the real generated theme from src/global.css, so the semantic tier
+   * (content/surface/accent/status/outline/chart) and every raw family are
+   * recognized as first-class tokens — no whitelist needed (they were custom
+   * additions under Tailwind 3). `no-restricted-classes` bans any `[...]`
+   * arbitrary value. Gluestack `data-[...]`/`group-[...]` state selectors live
+   * only in src/components/ui/** (ignored below).
    */
   {
     files: ["src/**/*.tsx"],
     ignores: ["src/components/ui/**"],
-    plugins: { tailwindcss },
-    rules: {
-      "tailwindcss/no-arbitrary-value": "error",
-      "tailwindcss/no-custom-classname": "error",
-    },
+    plugins: { "better-tailwindcss": betterTailwind },
     settings: {
-      tailwindcss: {
-        config: TAILWIND_CONFIG_PATH,
-        whitelist: [
-          "data\\-\\[.*",
-          "group\\-\\[.*",
-          ".*\\-(content|surface|accent|status|outline|chart)\\-.*",
-        ],
+      "better-tailwindcss": {
+        entryPoint: "src/global.css",
+        tsconfig: "tsconfig.json",
       },
+    },
+    rules: {
+      "better-tailwindcss/no-unknown-classes": "error",
+      "better-tailwindcss/no-restricted-classes": [
+        "error",
+        { restrict: ["\\[.*\\]"] },
+      ],
     },
   },
   /**
@@ -541,8 +584,8 @@ export default [
    * designSystemPlugin definition above.
    */
   {
-    // Anchored on the atoms barrel (tailwind.config.js — where the tier
-    // resolves — is eslint-ignored). The rule loads colors via jiti.
+    // Anchored on the atoms barrel — always present and linted. The rule
+    // imports SEMANTIC_COLORS/CHART_COLORS from src/design-system/tokens.ts.
     files: ["src/components/atoms/index.ts"],
     plugins: { "design-system": designSystemPlugin },
     rules: { "design-system/semantic-token-budget": "error" },
@@ -556,6 +599,18 @@ export default [
     files: ["src/components/atoms/galleryManifest.ts"],
     plugins: { "design-system": designSystemPlugin },
     rules: { "design-system/gallery-manifest-fresh": "error" },
+  },
+  {
+    // Anchored on the token source of truth — verifies src/global.css is a
+    // fresh render of tokens.ts (mirrors gallery-manifest-fresh). max-lines is
+    // off here: it is a data module (full light/dark palette + closed scales),
+    // intentionally long, and the single source global.css is generated from.
+    files: ["src/design-system/tokens.ts"],
+    plugins: { "design-system": designSystemPlugin },
+    rules: {
+      "design-system/global-css-fresh": "error",
+      "max-lines": "off",
+    },
   },
   /**
    * ── Re-stated base exemptions ──
@@ -597,8 +652,8 @@ export default [
     files: ["**/__tests__/**", "**/*.test.ts", "**/*.test.tsx"],
     rules: {
       "no-restricted-syntax": "off",
-      "tailwindcss/no-arbitrary-value": "off",
-      "tailwindcss/no-custom-classname": "off",
+      "better-tailwindcss/no-unknown-classes": "off",
+      "better-tailwindcss/no-restricted-classes": "off",
       "no-restricted-imports": "off",
     },
   },
