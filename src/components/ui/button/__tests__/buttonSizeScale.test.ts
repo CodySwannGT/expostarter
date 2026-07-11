@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * @file buttonSizeScale.test.ts
  * @description Regression guard for SE-5256. The design-system token-closing

@@ -25,7 +25,7 @@ type UIButtonProps = React.ComponentProps<typeof UIButton>;
  */
 type IconComponent = React.ElementType;
 
-/** Semantic intent — maps to the Gluestack action internally. */
+/** Semantic intent — maps to the vendored button's `action` internally. */
 export type ButtonTone = "primary" | "secondary" | "positive" | "danger";
 /**
  *
@@ -36,6 +36,12 @@ export type ButtonVariant = "solid" | "outline" | "link";
  */
 export type ButtonSize = "xs" | "sm" | "md" | "lg";
 
+/**
+ * Intent -> vendored button `action`. The vendored gluestack-v5 Button keeps
+ * the v3 action x variant x size axes (see src/components/ui/button), so every
+ * tone renders in-brand (positive = success, danger = error) and outline/link
+ * carry their tone — no collapse into v5's shadcn variant set.
+ */
 const TONE_TO_ACTION: Record<
   ButtonTone,
   "primary" | "secondary" | "positive" | "negative"
@@ -74,7 +80,7 @@ interface ButtonOwnProps
       | "accessibilityLabel"
     >,
     WithUnsafeStyle<UIButtonProps["style"]> {
-  /** Semantic intent (danger maps to Gluestack "negative"). */
+  /** Semantic intent — TONE_TO_ACTION maps it to the vendored button's `action` (danger → "negative"). */
   tone?: ButtonTone;
   variant?: ButtonVariant;
   size?: ButtonSize;

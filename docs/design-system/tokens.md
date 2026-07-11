@@ -1,9 +1,12 @@
 # Token specification
 
-Ratified vocabulary for the design library. Names are the public language;
-values live in `tailwind.config.js` (scales) and
-`src/components/ui/gluestack-ui-provider/config.ts` (raw-palette CSS vars,
-light AND dark). Source RFC: `docs/design-system-rfc.md`.
+Ratified vocabulary for the design library. Names are the public language.
+Under Tailwind 4 all values live in the single source of truth
+`src/design-system/tokens.ts` (scales, semantic tier, and the raw-palette CSS
+vars for light AND dark), which is rendered to `src/global.css` (`@theme`) by
+`scripts/design-system/generate-global-css.mjs` — run `bun run design:css`; the
+`design-system/global-css-fresh` lint rule fails on drift. (`tailwind.config.js`
+and the provider `config.ts` are gone.) Source RFC: `docs/design-system-rfc.md`.
 
 ## Spacing scale (ratified decision #3)
 
@@ -32,7 +35,9 @@ overlays). Spacing steps plus `7`(28) `9`(36) `11`(44) `14`(56) `20`(80)
 `24`(96) `28`(112) `32`(128) `40`(160) `44`(176) `48`(192) `52`(208)
 `56`(224) `64`(256) `72`(288) `80`(320) `96`(384), plus the non-numeric
 layout values (`full auto screen fit min max` and percentage fractions —
-fractions are completed on the min/max axes in `tailwind.config.js`).
+fractions are native Tailwind-4 width/height utilities). The sizing ladder
+lives in `SPACING` in `src/design-system/tokens.ts` (Tailwind 4 shares the
+`--spacing-*` namespace across the width/height axes).
 
 ## Text styles (ratified decision #4 — 8 styles)
 
@@ -53,18 +58,19 @@ ladder (same shape as a Button having `sm/md/lg`).
 | `title-lg` | 20 / 28 | heading (system) bold |
 | `display` (sm 24/32 · md 30/36 · lg 36/40 · xl 48 · 2xl 60) | — | heading (system) bold |
 
-The starter ships the platform system font stack (`fontFamily.heading` /
-`fontFamily.body` in `tailwind.config.js` via `platformSelect`). A brand-font
+The starter ships the platform system font stack (`FONT_FAMILY.heading` /
+`FONT_FAMILY.body` in `src/design-system/tokens.ts`). A brand-font
 project swaps those families (and, if the brand ships weight-specific
 families, moves the weight into the family inside `TEXT_VARIANT_CLASS`) — the
 style NAMES stay stable.
 
 ## Semantic color tier (ratified decision #2 — 24 tokens + chart annex)
 
-Anchored on the raw-palette CSS vars in
-`src/components/ui/gluestack-ui-provider/config.ts` — each token renders in
-both modes for free. The tier's size is lint-bound to 15–25
-(`design-system/semantic-token-budget`).
+Anchored on the raw-palette CSS vars in `SEMANTIC_COLORS` /`RAW_PALETTE`
+(`src/design-system/tokens.ts`, rendered into `src/global.css`) — each token
+renders in both modes for free. The tier's size is lint-bound to 15–25
+(`design-system/semantic-token-budget`, which imports the tier from
+`tokens.ts`).
 
 ### content (text/icon)
 

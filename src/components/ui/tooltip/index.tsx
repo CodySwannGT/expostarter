@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use client';
 import React from 'react';
 import { createTooltip } from '@gluestack-ui/core/tooltip/creator';
@@ -10,32 +11,33 @@ import {
   AnimatePresence,
   MotionComponentProps,
 } from '@legendapp/motion';
-import { cssInterop } from 'nativewind';
+import { styled } from 'nativewind';
 
 type IMotionViewProps = React.ComponentProps<typeof View> &
   MotionComponentProps<typeof View, ViewStyle, unknown, unknown, unknown>;
 
 const MotionView = Motion.View as React.ComponentType<IMotionViewProps>;
 
+const StyledMotionView = styled(MotionView, { className: 'style' });
+
 export const UITooltip = createTooltip({
-  Root: withStyleContext(View),
+  Root: withStyleContext(StyledMotionView),
   Content: MotionView,
   Text: Text,
   AnimatePresence: AnimatePresence,
 });
 
-cssInterop(MotionView, { className: 'style' });
 
 const tooltipStyle = tva({
   base: 'w-full h-full web:pointer-events-none',
 });
 
 const tooltipContentStyle = tva({
-  base: 'py-1 px-3 rounded-none bg-background-900 web:pointer-events-auto',
+  base: 'py-1 px-3 rounded-sm bg-background/90 web:pointer-events-auto',
 });
 
 const tooltipTextStyle = tva({
-  base: 'font-normal tracking-normal web:select-none text-caption text-content-inverse',
+  base: 'font-normal tracking-normal web:select-none text-xs text-foreground/90',
 
   variants: {
     isTruncated: {
@@ -51,20 +53,20 @@ const tooltipTextStyle = tva({
       true: 'line-through',
     },
     size: {
-      '2xs': 'text-micro',
-      'xs': 'text-caption',
-      'sm': 'text-body',
-      'md': 'text-title-sm',
-      'lg': 'text-title',
-      'xl': 'text-title-lg',
-      '2xl': 'text-display-sm',
-      '3xl': 'text-display-md',
-      '4xl': 'text-display-lg',
-      '5xl': 'text-display-xl',
-      '6xl': 'text-display-2xl',
+      '2xs': 'text-2xs',
+      'xs': 'text-xs',
+      'sm': 'text-sm',
+      'md': 'text-base',
+      'lg': 'text-lg',
+      'xl': 'text-xl',
+      '2xl': 'text-2xl',
+      '3xl': 'text-3xl',
+      '4xl': 'text-4xl',
+      '5xl': 'text-5xl',
+      '6xl': 'text-6xl',
     },
     sub: {
-      true: 'text-caption',
+      true: 'text-xs',
     },
     italic: {
       true: 'italic',

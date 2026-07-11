@@ -1,37 +1,34 @@
+// @ts-nocheck
 'use client';
-import { PrimitiveIcon, UIIcon } from '@gluestack-ui/core/icon/creator';
-import { createInput } from '@gluestack-ui/core/input/creator';
-import type { VariantProps } from '@gluestack-ui/utils/nativewind-utils';
-import { tva, useStyleContext, withStyleContext } from '@gluestack-ui/utils/nativewind-utils';
-import { cssInterop } from 'nativewind';
 import React from 'react';
-import { Pressable, TextInput, View } from 'react-native';
+import { createInput } from '@gluestack-ui/core/input/creator';
+import { View, Pressable, TextInput } from 'react-native';
+import { tva } from '@gluestack-ui/utils/nativewind-utils';
+import {
+  withStyleContext,
+  useStyleContext,
+} from '@gluestack-ui/utils/nativewind-utils';
+import { styled } from 'nativewind';
+import type { VariantProps } from '@gluestack-ui/utils/nativewind-utils';
+import { UIIcon } from '@gluestack-ui/core/icon/creator';
 
+// LOCAL (design-system): this vendored gluestack-v5 Input keeps the v3
+// size x variant (outline/underlined/rounded) API the sealed atom layer depends
+// on, styled with the project's semantic tokens — not v5's single shadcn style.
+// The atom Input (src/components/atoms/Input) exposes size/variant publicly.
 const SCOPE = 'INPUT';
+
+const StyledUIIcon = styled(UIIcon, { className: 'style' });
 
 const UIInput = createInput({
   Root: withStyleContext(View, SCOPE),
-  Icon: UIIcon,
+  Icon: StyledUIIcon,
   Slot: Pressable,
   Input: TextInput,
 });
 
-cssInterop(PrimitiveIcon, {
-  className: {
-    target: 'style',
-    nativeStyleToProp: {
-      height: true,
-      width: true,
-      fill: true,
-      color: 'classNameColor',
-      stroke: true,
-    },
-  },
-});
-
 const inputStyle = tva({
   base: 'border-surface-strong flex-row overflow-hidden content-center data-[hover=true]:border-outline-strong data-[focus=true]:border-primary-700 data-[focus=true]:hover:border-primary-700 data-[disabled=true]:opacity-40 data-[disabled=true]:hover:border-surface-strong items-center',
-
   variants: {
     size: {
       xl: 'h-12',
@@ -39,16 +36,13 @@ const inputStyle = tva({
       md: 'h-10',
       sm: 'h-9',
     },
-
     variant: {
       underlined:
         'rounded-none border-b data-[invalid=true]:border-b-2 data-[invalid=true]:border-error-700 data-[invalid=true]:hover:border-error-700 data-[invalid=true]:data-[focus=true]:border-error-700 data-[invalid=true]:data-[focus=true]:hover:border-error-700 data-[invalid=true]:data-[disabled=true]:hover:border-error-700',
-
       outline:
-        'rounded-sm border data-[invalid=true]:border-error-700 data-[invalid=true]:hover:border-error-700 data-[invalid=true]:data-[focus=true]:border-error-700 data-[invalid=true]:data-[focus=true]:hover:border-error-700 data-[invalid=true]:data-[disabled=true]:hover:border-error-700 data-[focus=true]:web:ring-1 data-[focus=true]:web:ring-inset data-[focus=true]:web:ring-indicator-primary data-[invalid=true]:web:ring-1 data-[invalid=true]:web:ring-inset data-[invalid=true]:web:ring-indicator-error data-[invalid=true]:data-[focus=true]:hover:web:ring-1 data-[invalid=true]:data-[focus=true]:hover:web:ring-inset data-[invalid=true]:data-[focus=true]:hover:web:ring-indicator-error data-[invalid=true]:data-[disabled=true]:hover:web:ring-1 data-[invalid=true]:data-[disabled=true]:hover:web:ring-inset data-[invalid=true]:data-[disabled=true]:hover:web:ring-indicator-error',
-
+        'rounded-sm border data-[invalid=true]:border-error-700 data-[invalid=true]:hover:border-error-700 data-[invalid=true]:data-[focus=true]:border-error-700 data-[invalid=true]:data-[focus=true]:hover:border-error-700 data-[invalid=true]:data-[disabled=true]:hover:border-error-700 data-[focus=true]:web:ring-1 data-[focus=true]:web:ring-inset data-[focus=true]:web:ring-indicator-primary data-[invalid=true]:web:ring-1 data-[invalid=true]:web:ring-inset data-[invalid=true]:web:ring-indicator-error',
       rounded:
-        'rounded-full border data-[invalid=true]:border-error-700 data-[invalid=true]:hover:border-error-700 data-[invalid=true]:data-[focus=true]:border-error-700 data-[invalid=true]:data-[focus=true]:hover:border-error-700 data-[invalid=true]:data-[disabled=true]:hover:border-error-700 data-[focus=true]:web:ring-1 data-[focus=true]:web:ring-inset data-[focus=true]:web:ring-indicator-primary data-[invalid=true]:web:ring-1 data-[invalid=true]:web:ring-inset data-[invalid=true]:web:ring-indicator-error data-[invalid=true]:data-[focus=true]:hover:web:ring-1 data-[invalid=true]:data-[focus=true]:hover:web:ring-inset data-[invalid=true]:data-[focus=true]:hover:web:ring-indicator-error data-[invalid=true]:data-[disabled=true]:hover:web:ring-1 data-[invalid=true]:data-[disabled=true]:hover:web:ring-inset data-[invalid=true]:data-[disabled=true]:hover:web:ring-indicator-error',
+        'rounded-full border data-[invalid=true]:border-error-700 data-[invalid=true]:hover:border-error-700 data-[invalid=true]:data-[focus=true]:border-error-700 data-[invalid=true]:data-[focus=true]:hover:border-error-700 data-[invalid=true]:data-[disabled=true]:hover:border-error-700 data-[focus=true]:web:ring-1 data-[focus=true]:web:ring-inset data-[focus=true]:web:ring-indicator-primary data-[invalid=true]:web:ring-1 data-[invalid=true]:web:ring-inset data-[invalid=true]:web:ring-indicator-error',
     },
   },
 });
@@ -58,11 +52,11 @@ const inputIconStyle = tva({
   parentVariants: {
     size: {
       '2xs': 'h-3 w-3',
-      'xs': 'h-3 w-3',
-      'sm': 'h-4 w-4',
-      'md': 'h-4 w-4',
-      'lg': 'h-5 w-5',
-      'xl': 'h-6 w-6',
+      xs: 'h-3 w-3',
+      sm: 'h-4 w-4',
+      md: 'h-4 w-4',
+      lg: 'h-5 w-5',
+      xl: 'h-6 w-6',
     },
   },
 });
@@ -73,26 +67,19 @@ const inputSlotStyle = tva({
 
 const inputFieldStyle = tva({
   base: 'flex-1 text-content-primary py-0 px-3 placeholder:text-content-muted h-full ios:leading-[0px] web:cursor-text web:data-[disabled=true]:cursor-not-allowed',
-
   parentVariants: {
     variant: {
       underlined: 'web:outline-0 web:outline-none px-0',
       outline: 'web:outline-0 web:outline-none',
       rounded: 'web:outline-0 web:outline-none px-4',
     },
-
     size: {
       '2xs': 'text-micro',
-      'xs': 'text-caption',
-      'sm': 'text-body',
-      'md': 'text-title-sm',
-      'lg': 'text-title',
-      'xl': 'text-title-lg',
-      '2xl': 'text-display-sm',
-      '3xl': 'text-display-md',
-      '4xl': 'text-display-lg',
-      '5xl': 'text-display-xl',
-      '6xl': 'text-display-2xl',
+      xs: 'text-caption',
+      sm: 'text-body',
+      md: 'text-title-sm',
+      lg: 'text-title',
+      xl: 'text-title-lg',
     },
   },
 });
@@ -100,10 +87,7 @@ const inputFieldStyle = tva({
 type IInputProps = React.ComponentProps<typeof UIInput> &
   VariantProps<typeof inputStyle> & { className?: string };
 const Input = React.forwardRef<React.ComponentRef<typeof UIInput>, IInputProps>(
-  function Input(
-    { className, variant = 'outline', size = 'md', ...props },
-    ref
-  ) {
+  function Input({ className, variant = 'outline', size = 'md', ...props }, ref) {
     return (
       <UIInput
         ref={ref}
@@ -120,6 +104,9 @@ type IInputIconProps = React.ComponentProps<typeof UIInput.Icon> &
     className?: string;
     height?: number;
     width?: number;
+    // Local: the gluestack Icon renders `as` at runtime (used by the Input
+    // atom to slot a Lucide icon); v5 dropped it from the type — restore it.
+    as?: React.ElementType;
   };
 
 const InputIcon = React.forwardRef<
@@ -154,9 +141,7 @@ const InputIcon = React.forwardRef<
       ref={ref}
       {...props}
       className={inputIconStyle({
-        parentVariants: {
-          size: parentSize,
-        },
+        parentVariants: { size: parentSize },
         class: className,
       })}
     />
@@ -195,10 +180,7 @@ const InputField = React.forwardRef<
       ref={ref}
       {...props}
       className={inputFieldStyle({
-        parentVariants: {
-          variant: parentVariant,
-          size: parentSize,
-        },
+        parentVariants: { variant: parentVariant, size: parentSize },
         class: className,
       })}
     />
@@ -211,4 +193,3 @@ InputSlot.displayName = 'InputSlot';
 InputField.displayName = 'InputField';
 
 export { Input, InputField, InputIcon, InputSlot };
-export type { IInputFieldProps };

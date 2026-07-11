@@ -1,44 +1,37 @@
 // @ts-nocheck
 'use client';
-import React from 'react';
 import { createButton } from '@gluestack-ui/core/button/creator';
-import { tva } from '@gluestack-ui/utils/nativewind-utils';
+import { UIIcon } from '@gluestack-ui/core/icon/creator';
 import {
-  withStyleContext,
+  tva,
   useStyleContext,
+  withStyleContext,
+  type VariantProps,
 } from '@gluestack-ui/utils/nativewind-utils';
-import { cssInterop } from 'nativewind';
+import { styled } from 'nativewind';
+import React from 'react';
 import { ActivityIndicator, Pressable, Text, View } from 'react-native';
-import type { VariantProps } from 'tailwind-variants';
-import { PrimitiveIcon, UIIcon } from '@gluestack-ui/core/icon/creator';
 
+// LOCAL (design-system): this vendored gluestack-v5 Button keeps the v3 API the
+// sealed atom layer depends on — `action` (intent) x `variant` (style) x `size`
+// with the project's semantic/raw tokens — instead of v5's shadcn variant set.
+// The atom Button (src/components/atoms/Button) maps its frozen public
+// tone/variant/size onto these. Do not "simplify" to stock v5 without updating
+// the atom + galleries. (`rounded` -> `rounded-md` under Tailwind 4.)
 const SCOPE = 'BUTTON';
-
 const Root = withStyleContext(Pressable, SCOPE);
-
+const StyledUIIcon = styled(UIIcon, {
+  className: 'style',
+});
 const UIButton = createButton({
   Root: Root,
   Text,
   Group: View,
   Spinner: ActivityIndicator,
-  Icon: UIIcon,
+  Icon: StyledUIIcon,
 });
-
-cssInterop(PrimitiveIcon, {
-  className: {
-    target: 'style',
-    nativeStyleToProp: {
-      height: true,
-      width: true,
-      fill: true,
-      color: 'classNameColor',
-      stroke: true,
-    },
-  },
-});
-
 const buttonStyle = tva({
-  base: 'group/button rounded bg-primary-500 flex-row items-center justify-center data-[focus-visible=true]:web:outline-none data-[focus-visible=true]:web:ring-2 data-[disabled=true]:opacity-40 gap-2',
+  base: 'group/button rounded-md bg-primary-500 flex-row items-center justify-center data-[focus-visible=true]:web:outline-none data-[focus-visible=true]:web:ring-2 data-[disabled=true]:opacity-40 gap-2',
   variants: {
     action: {
       primary:
@@ -58,20 +51,14 @@ const buttonStyle = tva({
         'bg-transparent border data-[hover=true]:bg-surface-raised data-[active=true]:bg-transparent',
       solid: '',
     },
-
     size: {
       xs: 'px-3 h-8',
       sm: 'px-4 h-9',
       md: 'px-5 h-10',
       lg: 'px-6 h-11',
-      // SE-5256: the design-system token-closing migration (commit 2a8504d33)
-      // removed step `7` from the closed `spacing` scale (…5 6 8 10 12 16),
-      // but the codemod excluded `src/components/ui/**`, so this `px-7` was
-      // never snapped. `px-7` therefore compiles to NOTHING — every
-      // `size="xl"` button (e.g. the Shadow Team "Assigned Players" Save
-      // button) rendered with zero horizontal padding, so its
-      // `bg-surface-muted` background hugged the label and looked cut off.
-      // Snap 28px → `px-6` per the snap-table policy (ties round down).
+      // SE-5256: the closed spacing scale removed step `7`, so the original
+      // `px-7` compiled to nothing and every size="xl" button rendered with
+      // zero horizontal padding. Snap 28px -> `px-6` (ties round down).
       xl: 'px-6 h-12',
     },
   },
@@ -126,7 +113,6 @@ const buttonStyle = tva({
     },
   ],
 });
-
 const buttonTextStyle = tva({
   base: 'text-content-inverse font-semibold web:select-none',
   parentVariants: {
@@ -206,6 +192,19 @@ const buttonTextStyle = tva({
   ],
 });
 
+const buttonSpinnerStyle = tva({
+  base: '',
+  parentVariants: {
+    size: {
+      xs: 'h-3 w-3',
+      sm: 'h-4 w-4',
+      md: 'h-4 w-4',
+      lg: 'h-4 w-4',
+      xl: 'h-5 w-5',
+    },
+  },
+});
+
 const buttonIconStyle = tva({
   base: 'fill-none',
   parentVariants: {
@@ -229,7 +228,6 @@ const buttonIconStyle = tva({
         'text-content-muted data-[hover=true]:text-content-secondary data-[active=true]:text-content-secondary',
       positive:
         'text-success-600 data-[hover=true]:text-success-600 data-[active=true]:text-success-700',
-
       negative:
         'text-error-600 data-[hover=true]:text-error-600 data-[active=true]:text-error-700',
     },
@@ -261,38 +259,32 @@ const buttonIconStyle = tva({
     },
   ],
 });
-
 const buttonGroupStyle = tva({
   base: '',
   variants: {
     space: {
-      'xs': 'gap-1',
-      'sm': 'gap-2',
-      'md': 'gap-3',
-      'lg': 'gap-4',
-      'xl': 'gap-5',
-      '2xl': 'gap-6',
-      '3xl': 'gap-6',
-      '4xl': 'gap-8',
+      xs: 'gap-1',
+      sm: 'gap-2',
+      md: 'gap-3',
+      lg: 'gap-4',
+      xl: 'gap-5',
     },
     isAttached: {
       true: 'gap-0',
     },
     flexDirection: {
-      'row': 'flex-row',
-      'column': 'flex-col',
+      row: 'flex-row',
+      column: 'flex-col',
       'row-reverse': 'flex-row-reverse',
       'column-reverse': 'flex-col-reverse',
     },
   },
 });
-
 type IButtonProps = Omit<
   React.ComponentPropsWithoutRef<typeof UIButton>,
   'context'
 > &
   VariantProps<typeof buttonStyle> & { className?: string };
-
 const Button = React.forwardRef<
   React.ElementRef<typeof UIButton>,
   IButtonProps
@@ -311,46 +303,49 @@ const Button = React.forwardRef<
     );
   }
 );
-
 type IButtonTextProps = React.ComponentPropsWithoutRef<typeof UIButton.Text> &
   VariantProps<typeof buttonTextStyle> & { className?: string };
-
 const ButtonText = React.forwardRef<
   React.ElementRef<typeof UIButton.Text>,
   IButtonTextProps
->(({ className, variant, size, action, ...props }, ref) => {
+>(({ className, size, ...props }, ref) => {
   const {
-    variant: parentVariant,
     size: parentSize,
+    variant: parentVariant,
     action: parentAction,
   } = useStyleContext(SCOPE);
-
   return (
     <UIButton.Text
       ref={ref}
       {...props}
       className={buttonTextStyle({
         parentVariants: {
-          variant: parentVariant,
           size: parentSize,
+          variant: parentVariant,
           action: parentAction,
         },
-        variant: variant as 'link' | 'outline' | 'solid' | undefined,
         size,
-        action: action as
-          | 'primary'
-          | 'secondary'
-          | 'positive'
-          | 'negative'
-          | undefined,
         class: className,
       })}
     />
   );
 });
-
-const ButtonSpinner = UIButton.Spinner;
-
+const ButtonSpinner = React.forwardRef<
+  React.ElementRef<typeof UIButton.Spinner>,
+  React.ComponentPropsWithoutRef<typeof UIButton.Spinner>
+>(({ className, ...props }, ref) => {
+  const { size: parentSize } = useStyleContext(SCOPE);
+  return (
+    <UIButton.Spinner
+      ref={ref}
+      {...props}
+      className={buttonSpinnerStyle({
+        parentVariants: { size: parentSize },
+        class: className,
+      })}
+    />
+  );
+});
 type IButtonIcon = React.ComponentPropsWithoutRef<typeof UIButton.Icon> &
   VariantProps<typeof buttonIconStyle> & {
     className?: string | undefined;
@@ -358,17 +353,15 @@ type IButtonIcon = React.ComponentPropsWithoutRef<typeof UIButton.Icon> &
     height?: number;
     width?: number;
   };
-
 const ButtonIcon = React.forwardRef<
   React.ElementRef<typeof UIButton.Icon>,
   IButtonIcon
 >(({ className, size, ...props }, ref) => {
   const {
-    variant: parentVariant,
     size: parentSize,
+    variant: parentVariant,
     action: parentAction,
   } = useStyleContext(SCOPE);
-
   if (typeof size === 'number') {
     return (
       <UIButton.Icon
@@ -406,10 +399,8 @@ const ButtonIcon = React.forwardRef<
     />
   );
 });
-
 type IButtonGroupProps = React.ComponentPropsWithoutRef<typeof UIButton.Group> &
   VariantProps<typeof buttonGroupStyle>;
-
 const ButtonGroup = React.forwardRef<
   React.ElementRef<typeof UIButton.Group>,
   IButtonGroupProps
@@ -429,8 +420,8 @@ const ButtonGroup = React.forwardRef<
         className={buttonGroupStyle({
           class: className,
           space,
-          isAttached: isAttached as boolean,
-          flexDirection: flexDirection as any,
+          isAttached,
+          flexDirection,
         })}
         {...props}
         ref={ref}
@@ -438,11 +429,9 @@ const ButtonGroup = React.forwardRef<
     );
   }
 );
-
 Button.displayName = 'Button';
 ButtonText.displayName = 'ButtonText';
 ButtonSpinner.displayName = 'ButtonSpinner';
 ButtonIcon.displayName = 'ButtonIcon';
 ButtonGroup.displayName = 'ButtonGroup';
-
-export { Button, ButtonText, ButtonSpinner, ButtonIcon, ButtonGroup };
+export { Button, ButtonGroup, ButtonIcon, ButtonSpinner, ButtonText };

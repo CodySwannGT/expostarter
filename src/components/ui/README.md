@@ -60,3 +60,16 @@ This directory includes wrappers for all gluestack-ui components:
 - And more...
 
 Refer to the [gluestack-ui documentation](https://gluestack.io/ui/docs/home/overview/quick-start) for detailed information on component props and usage.
+
+## Versioning / regeneration
+
+These are **gluestack-ui v5** components (NativeWind 5 / Tailwind 4). They are
+vendored via `npx gluestack-ui@latest add <name>` and carry `// @ts-nocheck` —
+the repo does not typecheck vendored third-party code, and the directory is
+excluded from ESLint and Jest (`jest.config.local.ts`
+`testPathIgnorePatterns`). Local customizations (e.g. `InputIcon`'s `as` prop)
+are re-applied by hand after an `add`; the v5 components render in-brand via the
+shadcn component-token bridge in `src/global.css` (see
+`src/design-system/tokens.ts` `BRIDGE_COLORS`). Colors resolve from the
+generated `src/global.css`, never a `tailwind.config.js` (removed under
+Tailwind 4).
