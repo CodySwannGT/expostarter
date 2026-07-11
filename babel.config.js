@@ -1,10 +1,14 @@
 /**
- * Babel Configuration for Expo with NativeWind v4
+ * Babel Configuration for Expo with NativeWind v5.
  *
- * This configuration file sets up Babel for the Expo project with NativeWind support.
- * NativeWind enables Tailwind CSS styling in React Native applications.
+ * NativeWind v5 (react-native-css) performs the className interop in the Metro
+ * transformer (`withNativeWind` in metro.config.js), NOT via a Babel JSX
+ * runtime — so the v4-era `jsxImportSource: "nativewind"` and the
+ * `"nativewind/babel"` preset are gone (v5 ships no `nativewind/jsx-runtime`,
+ * and keeping either breaks the build). `babel-preset-expo` already wires the
+ * react-native-worklets/reanimated plugin under the New Architecture.
  *
- * @see https://www.nativewind.dev/v4/getting-started/expo-router
+ * @see https://www.nativewind.dev/getting-started/expo
  * @see https://docs.expo.dev/guides/customizing-babel/
  * @module babel.config
  */
@@ -19,12 +23,10 @@ module.exports = function (api) {
       [
         "babel-preset-expo",
         {
-          jsxImportSource: "nativewind",
           // Disable experimentalImportSupport in tests to avoid import.meta issues
           experimentalImportSupport: isTest ? false : undefined,
         },
       ],
-      "nativewind/babel",
     ],
   };
 };
