@@ -214,9 +214,26 @@ All of this lives in `eslint.config.local.ts`.
 
 ## Compatibility note
 
-This starter builds on NativeWind 4.x + Tailwind 3.4 (v3-LTS) + GlueStack v3
-(vendored under `src/components/ui/`). When the Tailwind-4 generation
-stabilizes, theme config moves into CSS `@theme` variables — the closed
-scales are kept in clearly-marked self-contained blocks in
-`tailwind.config.js` so they port mechanically. The thin-atom layer means
-that migration, like any GlueStack churn, is contained to one directory.
+**Migration executed.** This starter now runs on NativeWind 5 (preview) +
+Tailwind CSS 4 + GlueStack v5 (vendored under `src/components/ui/`). The
+theme config moved out of `tailwind.config.js` (deleted) into CSS-first
+`@theme` blocks in `src/global.css`, which is **generated** from the single
+source of truth `src/design-system/tokens.ts` by
+`scripts/design-system/generate-global-css.mjs` (run `bun run design:css`; the
+`design-system/global-css-fresh` lint rule fails on drift). The closed scales,
+the raw palette, and the semantic tier survive with identical token NAMES, so
+app-code classNames kept compiling. The thin-atom layer contained the GlueStack
+v5 component redesign (shadcn-flavored) to `src/components/ui/` plus a small
+per-atom remap: a `--primary`/`--destructive`/… component-token bridge in
+`global.css` renders the v5 components in-brand, and atoms map their stable
+public props onto v5's collapsed variant APIs.
+
+Two governance details changed under Tailwind 4:
+
+- **Spacing** is now a continuous 4px grid at the CSS level (Tailwind 4's
+  spacing is `--spacing`-based and NativeWind's `leading-*` needs the base
+  `--spacing`, so it cannot be reset to a closed set). The closed spacing
+  vocabulary is enforced by the atom `SpaceToken` enum + the no-arbitrary-value
+  lint rule instead. Radius stays closed.
+- Class linting moved from `eslint-plugin-tailwindcss` (Tailwind 3 only) to
+  `eslint-plugin-better-tailwindcss` reading `src/global.css`.
