@@ -25,7 +25,7 @@ type UIButtonProps = React.ComponentProps<typeof UIButton>;
  */
 type IconComponent = React.ElementType;
 
-/** Semantic intent — maps to the Gluestack v5 button variant internally. */
+/** Semantic intent — maps to the vendored button's `action` internally. */
 export type ButtonTone = "primary" | "secondary" | "positive" | "danger";
 /**
  *
@@ -36,40 +36,20 @@ export type ButtonVariant = "solid" | "outline" | "link";
  */
 export type ButtonSize = "xs" | "sm" | "md" | "lg";
 
-/** Gluestack v5's button variants (default/destructive/outline/secondary/ghost/link). */
-type UIButtonVariant = NonNullable<UIButtonProps["variant"]>;
-/** Gluestack v5's button sizes (default/sm/lg/icon). */
-type UIButtonSize = NonNullable<UIButtonProps["size"]>;
-
 /**
- * Gluestack v5 collapsed the v3 `action` (intent) + `variant` (style) axes into
- * a single `variant`. Map the atom's stable (tone, variant) public API onto it:
- * a solid button carries its intent (default/secondary/destructive), while
- * outline/link stay neutral in v5's vocabulary.
- * TODO(design-system): v5 has no success/"positive" or tone-colored
- * outline/link variant — restore those by extending the vendored button tva
- * with our status tokens if brand parity requires it.
- * @param tone Semantic intent.
- * @param variant Visual style.
- * @returns The Gluestack v5 button variant.
+ * Intent -> vendored button `action`. The vendored gluestack-v5 Button keeps
+ * the v3 action x variant x size axes (see src/components/ui/button), so every
+ * tone renders in-brand (positive = success, danger = error) and outline/link
+ * carry their tone — no collapse into v5's shadcn variant set.
  */
-function toUIVariant(
-  tone: ButtonTone,
-  variant: ButtonVariant
-): UIButtonVariant {
-  if (variant === "link") return "link";
-  if (variant === "outline") return "outline";
-  if (tone === "danger") return "destructive";
-  if (tone === "secondary") return "secondary";
-  return "default";
-}
-
-/** v5 button sizes are default/sm/lg/icon; the atom's xs collapses to the smallest (sm). */
-const SIZE_TO_UI_SIZE: Record<ButtonSize, UIButtonSize> = {
-  xs: "sm",
-  sm: "sm",
-  md: "default",
-  lg: "lg",
+const TONE_TO_ACTION: Record<
+  ButtonTone,
+  "primary" | "secondary" | "positive" | "negative"
+> = {
+  primary: "primary",
+  secondary: "secondary",
+  positive: "positive",
+  danger: "negative",
 };
 
 /**
@@ -140,8 +120,9 @@ const Button = React.forwardRef<
   return (
     <UIButton
       ref={ref}
-      variant={toUIVariant(tone, variant)}
-      size={SIZE_TO_UI_SIZE[size]}
+      action={TONE_TO_ACTION[tone]}
+      variant={variant}
+      size={size}
       isDisabled={isDisabled || isLoading}
       style={UNSAFE_style}
       {...props}

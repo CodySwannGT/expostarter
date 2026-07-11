@@ -70,6 +70,6 @@ excluded from ESLint and Jest (`jest.config.local.ts`
 `testPathIgnorePatterns`). Local customizations (e.g. `InputIcon`'s `as` prop)
 are re-applied by hand after an `add`; the v5 components render in-brand via the
 shadcn component-token bridge in `src/global.css` (see
-`src/design-system/tokens.ts` `SHADCN_COLORS`). Colors resolve from the
+`src/design-system/tokens.ts` `BRIDGE_COLORS`). Colors resolve from the
 generated `src/global.css`, never a `tailwind.config.js` (removed under
 Tailwind 4).

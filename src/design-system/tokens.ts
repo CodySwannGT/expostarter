@@ -425,14 +425,22 @@ export const SEMANTIC_COLORS: {
 };
 
 /**
- * Gluestack v5 component-token bridge (the shadcn vocabulary the v5 vendored
- * components speak: `bg-primary` / `bg-destructive` / `text-muted-foreground` /
- * `border-input` / `ring-ring` …). App/atom code never uses these directly —
- * they exist so the v5 components in src/components/ui/** render in-brand.
- * Each maps to a raw palette var (via {@link SemanticValue.ref}) so it
- * mode-switches with light/dark, exactly like the v3 provider fed them.
+ * Gluestack v5 component-token bridge — the shadcn vocabulary the v5 vendored
+ * components speak internally (`bg-primary` / `bg-destructive` /
+ * `text-muted-foreground` / `border-input` / `ring-ring` …).
+ *
+ * This tier exists SOLELY so the vendored v5 components in `src/components/ui/**`
+ * render in-brand; it is **not** part of the ratified design vocabulary. App
+ * and atom code must never use these classes — they are lint-banned outside
+ * `src/components/ui/**` (`better-tailwindcss/no-restricted-classes` in
+ * eslint.config.local.ts). The set is CLOSED: it must equal the enumerated
+ * `ALLOWED_BRIDGE_KEYS` list in the `design-system/semantic-token-budget` rule
+ * (asserted there, like the chart annex), and it is EXEMPT from the
+ * semantic-token budget count. Each value maps to a
+ * raw palette var so it mode-switches with light/dark, exactly like the v3
+ * provider fed the equivalent shades.
  */
-export const SHADCN_COLORS: Readonly<Record<string, SemanticValue>> = {
+export const BRIDGE_COLORS: Readonly<Record<string, SemanticValue>> = {
   background: { ref: "background-0" },
   foreground: { ref: "typography-900" },
   card: { ref: "background-0" },

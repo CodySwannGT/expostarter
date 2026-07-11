@@ -59,7 +59,7 @@ function colorTokens() {
   for (const [k, hex] of Object.entries(T.TOAST_COLORS))
     out.push(`  --color-toast-${k}: ${hex};`);
   // Gluestack v5 component-token bridge (shadcn vocabulary → our palette vars).
-  for (const [name, val] of Object.entries(T.SHADCN_COLORS)) {
+  for (const [name, val] of Object.entries(T.BRIDGE_COLORS)) {
     const css = typeof val === "string" ? val : `rgb(var(--${val.ref}))`;
     out.push(`  --color-${name}: ${css};`);
   }

@@ -10,7 +10,7 @@ import {
   SEMANTIC_COLORS,
   CHART_COLORS,
   TOAST_COLORS,
-  SHADCN_COLORS,
+  BRIDGE_COLORS,
   RAW_PALETTE,
 } from "@/design-system/tokens";
 
@@ -56,7 +56,7 @@ describe("design tokens", () => {
 
   it("defines the gluestack v5 shadcn component-token bridge", () => {
     for (const name of ["primary", "destructive", "muted", "border", "ring"]) {
-      expect(SHADCN_COLORS[name]).toBeDefined();
+      expect(BRIDGE_COLORS[name]).toBeDefined();
     }
   });
 

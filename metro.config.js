@@ -1,5 +1,5 @@
 const { getSentryExpoConfig } = require("@sentry/react-native/metro");
-const { withNativeWind } = require("nativewind/metro");
+const { withNativewind } = require("nativewind/metro");
 
 const config = getSentryExpoConfig(__dirname, {
   annotateReactComponents: true,
@@ -46,4 +46,4 @@ config.transformer = {
 // NativeWind v5 discovers the CSS entry from the app's `import "@/global.css"`
 // (src/app/_layout.tsx) processed by Metro's CSS transformer (isCSSEnabled
 // above) + @tailwindcss/postcss — the v4 `{ input, output }` options are gone.
-module.exports = withNativeWind(config);
+module.exports = withNativewind(config);

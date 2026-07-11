@@ -11,10 +11,17 @@ import {
 import { styled } from 'nativewind';
 import React from 'react';
 import { ActivityIndicator, Pressable, Text, View } from 'react-native';
+
+// LOCAL (design-system): this vendored gluestack-v5 Button keeps the v3 API the
+// sealed atom layer depends on — `action` (intent) x `variant` (style) x `size`
+// with the project's semantic/raw tokens — instead of v5's shadcn variant set.
+// The atom Button (src/components/atoms/Button) maps its frozen public
+// tone/variant/size onto these. Do not "simplify" to stock v5 without updating
+// the atom + galleries. (`rounded` -> `rounded-md` under Tailwind 4.)
 const SCOPE = 'BUTTON';
 const Root = withStyleContext(Pressable, SCOPE);
 const StyledUIIcon = styled(UIIcon, {
-  className: "style",
+  className: 'style',
 });
 const UIButton = createButton({
   Root: Root,
@@ -24,100 +31,250 @@ const UIButton = createButton({
   Icon: StyledUIIcon,
 });
 const buttonStyle = tva({
-  base: 'rounded-md flex-row items-center justify-center data-[focus-visible=true]:web:outline-none data-[focus-visible=true]:web:ring-2 data-[disabled=true]:opacity-40 gap-2 h-fit',
+  base: 'group/button rounded-md bg-primary-500 flex-row items-center justify-center data-[focus-visible=true]:web:outline-none data-[focus-visible=true]:web:ring-2 data-[disabled=true]:opacity-40 gap-2',
   variants: {
-    variant: {
-      default:
-        'bg-primary data-[hover=true]:bg-primary/90 data-[active=true]:bg-primary/90',
-      destructive:
-        'bg-destructive data-[hover=true]:bg-destructive/90 data-[active=true]:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
-      outline:
-        'border border-border bg-background shadow-xs data-[hover=true]:bg-accent data-[active=true]:bg-accent dark:bg-input/[0.045] dark:border-border/90 dark:data-[hover=true]:bg-input/[0.075] dark:data-[active=true]:bg-input/[0.075]',
+    action: {
+      primary:
+        'bg-primary-500 data-[hover=true]:bg-primary-600 data-[active=true]:bg-primary-700 border-primary-300 data-[hover=true]:border-primary-400 data-[active=true]:border-primary-500 data-[focus-visible=true]:web:ring-indicator-info',
       secondary:
-        'bg-secondary text-secondary-foreground data-[hover=true]:bg-secondary/80 data-[active=true]:bg-secondary/80',
-      ghost: 'data-[hover=true]:bg-accent data-[active=true]:bg-accent dark:data-[hover=true]:bg-accent/50 dark:data-[active=true]:bg-accent/50',
-      link: 'text-primary underline-offset-4 data-[hover=true]:underline data-[active=true]:underline',
+        'bg-secondary-500 border-secondary-300 data-[hover=true]:bg-secondary-600 data-[hover=true]:border-secondary-400 data-[active=true]:bg-secondary-700 data-[active=true]:border-secondary-700 data-[focus-visible=true]:web:ring-indicator-info',
+      positive:
+        'bg-success-500 border-success-300 data-[hover=true]:bg-success-600 data-[hover=true]:border-success-400 data-[active=true]:bg-success-700 data-[active=true]:border-success-500 data-[focus-visible=true]:web:ring-indicator-info',
+      negative:
+        'bg-error-500 border-error-300 data-[hover=true]:bg-error-600 data-[hover=true]:border-error-400 data-[active=true]:bg-error-700 data-[active=true]:border-error-500 data-[focus-visible=true]:web:ring-indicator-info',
+      default:
+        'bg-transparent data-[hover=true]:bg-surface-raised data-[active=true]:bg-transparent',
+    },
+    variant: {
+      link: 'px-0',
+      outline:
+        'bg-transparent border data-[hover=true]:bg-surface-raised data-[active=true]:bg-transparent',
+      solid: '',
     },
     size: {
-      default: 'px-4 py-2',
-      sm: 'min-h-8 rounded-md px-3 text-xs',
-      lg: 'min-h-10 rounded-md px-8',
-      icon: 'min-h-9 min-w-9',
+      xs: 'px-3 h-8',
+      sm: 'px-4 h-9',
+      md: 'px-5 h-10',
+      lg: 'px-6 h-11',
+      // SE-5256: the closed spacing scale removed step `7`, so the original
+      // `px-7` compiled to nothing and every size="xl" button rendered with
+      // zero horizontal padding. Snap 28px -> `px-6` (ties round down).
+      xl: 'px-6 h-12',
     },
   },
+  compoundVariants: [
+    {
+      action: 'primary',
+      variant: 'link',
+      class:
+        'px-0 bg-transparent data-[hover=true]:bg-transparent data-[active=true]:bg-transparent',
+    },
+    {
+      action: 'secondary',
+      variant: 'link',
+      class:
+        'px-0 bg-transparent data-[hover=true]:bg-transparent data-[active=true]:bg-transparent',
+    },
+    {
+      action: 'positive',
+      variant: 'link',
+      class:
+        'px-0 bg-transparent data-[hover=true]:bg-transparent data-[active=true]:bg-transparent',
+    },
+    {
+      action: 'negative',
+      variant: 'link',
+      class:
+        'px-0 bg-transparent data-[hover=true]:bg-transparent data-[active=true]:bg-transparent',
+    },
+    {
+      action: 'primary',
+      variant: 'outline',
+      class:
+        'bg-transparent data-[hover=true]:bg-surface-raised data-[active=true]:bg-transparent',
+    },
+    {
+      action: 'secondary',
+      variant: 'outline',
+      class:
+        'bg-transparent data-[hover=true]:bg-surface-raised data-[active=true]:bg-transparent',
+    },
+    {
+      action: 'positive',
+      variant: 'outline',
+      class:
+        'bg-transparent data-[hover=true]:bg-surface-raised data-[active=true]:bg-transparent',
+    },
+    {
+      action: 'negative',
+      variant: 'outline',
+      class:
+        'bg-transparent data-[hover=true]:bg-surface-raised data-[active=true]:bg-transparent',
+    },
+  ],
 });
 const buttonTextStyle = tva({
-  base: 'web:select-none font-sans',
+  base: 'text-content-inverse font-semibold web:select-none',
   parentVariants: {
+    action: {
+      primary:
+        'text-primary-600 data-[hover=true]:text-primary-600 data-[active=true]:text-primary-700',
+      secondary:
+        'text-content-muted data-[hover=true]:text-content-secondary data-[active=true]:text-content-secondary',
+      positive:
+        'text-success-600 data-[hover=true]:text-success-600 data-[active=true]:text-success-700',
+      negative:
+        'text-error-600 data-[hover=true]:text-error-600 data-[active=true]:text-error-700',
+    },
     variant: {
-      default: 'text-primary-foreground',
-      destructive: 'text-white',
-      outline: 'text-foreground data-[hover=true]:text-accent-foreground data-[active=true]:text-accent-foreground',
-      secondary: 'text-secondary-foreground',
-      ghost: 'text-foreground ',
-      link: 'text-primary data-[hover=true]:underline data-[active=true]:underline',
+      link: 'data-[hover=true]:underline data-[active=true]:underline',
+      outline: '',
+      solid:
+        'text-content-inverse data-[hover=true]:text-content-inverse data-[active=true]:text-content-inverse',
     },
     size: {
-      default: 'text-sm',
-      sm: 'text-xs',
-      lg: 'text-sm',
-      icon: 'text-sm',
+      xs: 'text-caption',
+      sm: 'text-body',
+      md: 'text-title-sm',
+      lg: 'text-title',
+      xl: 'text-title-lg',
     },
   },
+  parentCompoundVariants: [
+    {
+      variant: 'solid',
+      action: 'primary',
+      class:
+        'text-content-inverse data-[hover=true]:text-content-inverse data-[active=true]:text-content-inverse',
+    },
+    {
+      variant: 'solid',
+      action: 'secondary',
+      class:
+        'text-content-primary data-[hover=true]:text-content-primary data-[active=true]:text-content-primary',
+    },
+    {
+      variant: 'solid',
+      action: 'positive',
+      class:
+        'text-content-inverse data-[hover=true]:text-content-inverse data-[active=true]:text-content-inverse',
+    },
+    {
+      variant: 'solid',
+      action: 'negative',
+      class:
+        'text-content-inverse data-[hover=true]:text-content-inverse data-[active=true]:text-content-inverse',
+    },
+    {
+      variant: 'outline',
+      action: 'primary',
+      class:
+        'text-primary-500 data-[hover=true]:text-primary-500 data-[active=true]:text-primary-500',
+    },
+    {
+      variant: 'outline',
+      action: 'secondary',
+      class:
+        'text-content-muted data-[hover=true]:text-primary-600 data-[active=true]:text-content-secondary',
+    },
+    {
+      variant: 'outline',
+      action: 'positive',
+      class:
+        'text-primary-500 data-[hover=true]:text-primary-500 data-[active=true]:text-primary-500',
+    },
+    {
+      variant: 'outline',
+      action: 'negative',
+      class:
+        'text-primary-500 data-[hover=true]:text-primary-500 data-[active=true]:text-primary-500',
+    },
+  ],
 });
 
 const buttonSpinnerStyle = tva({
   base: '',
   parentVariants: {
     size: {
-      default: 'h-4 w-4',
-      sm: 'h-3 w-3',
-      lg: 'h-5 w-5',
-      icon: 'h-4 w-4',
+      xs: 'h-3 w-3',
+      sm: 'h-4 w-4',
+      md: 'h-4 w-4',
+      lg: 'h-4 w-4',
+      xl: 'h-5 w-5',
     },
   },
 });
 
 const buttonIconStyle = tva({
-  base: 'fill-none pointer-events-none shrink-0',
+  base: 'fill-none',
   parentVariants: {
     variant: {
-      default: 'text-primary-foreground',
-      destructive: 'text-white',
-      outline:
-        'text-foreground data-[hover=true]:text-accent-foreground data-[active=true]:text-accent-foreground',
-      secondary: 'text-secondary-foreground',
-      ghost:
-        'text-foreground data-[hover=true]:text-accent-foreground data-[active=true]:text-accent-foreground',
-      link: 'text-primary',
+      link: 'data-[hover=true]:underline data-[active=true]:underline',
+      outline: '',
+      solid:
+        'text-content-inverse data-[hover=true]:text-content-inverse data-[active=true]:text-content-inverse',
     },
     size: {
-      default: 'h-4 w-4',
-      sm: 'h-3 w-3',
-      lg: 'h-5 w-5',
-      icon: 'h-4 w-4',
+      xs: 'h-3 w-3',
+      sm: 'h-4 w-4',
+      md: 'h-4 w-4',
+      lg: 'h-4 w-4',
+      xl: 'h-5 w-5',
+    },
+    action: {
+      primary:
+        'text-primary-600 data-[hover=true]:text-primary-600 data-[active=true]:text-primary-700',
+      secondary:
+        'text-content-muted data-[hover=true]:text-content-secondary data-[active=true]:text-content-secondary',
+      positive:
+        'text-success-600 data-[hover=true]:text-success-600 data-[active=true]:text-success-700',
+      negative:
+        'text-error-600 data-[hover=true]:text-error-600 data-[active=true]:text-error-700',
     },
   },
+  parentCompoundVariants: [
+    {
+      variant: 'solid',
+      action: 'primary',
+      class:
+        'text-content-inverse data-[hover=true]:text-content-inverse data-[active=true]:text-content-inverse',
+    },
+    {
+      variant: 'solid',
+      action: 'secondary',
+      class:
+        'text-content-primary data-[hover=true]:text-content-primary data-[active=true]:text-content-primary',
+    },
+    {
+      variant: 'solid',
+      action: 'positive',
+      class:
+        'text-content-inverse data-[hover=true]:text-content-inverse data-[active=true]:text-content-inverse',
+    },
+    {
+      variant: 'solid',
+      action: 'negative',
+      class:
+        'text-content-inverse data-[hover=true]:text-content-inverse data-[active=true]:text-content-inverse',
+    },
+  ],
 });
 const buttonGroupStyle = tva({
   base: '',
   variants: {
     space: {
-      'xs': 'gap-1',
-      'sm': 'gap-2',
-      'md': 'gap-3',
-      'lg': 'gap-4',
-      'xl': 'gap-5',
-      '2xl': 'gap-6',
-      '3xl': 'gap-7',
-      '4xl': 'gap-8',
+      xs: 'gap-1',
+      sm: 'gap-2',
+      md: 'gap-3',
+      lg: 'gap-4',
+      xl: 'gap-5',
     },
     isAttached: {
       true: 'gap-0',
     },
     flexDirection: {
-      'row': 'flex-row',
-      'column': 'flex-col',
+      row: 'flex-row',
+      column: 'flex-col',
       'row-reverse': 'flex-row-reverse',
       'column-reverse': 'flex-col-reverse',
     },
@@ -131,23 +288,32 @@ type IButtonProps = Omit<
 const Button = React.forwardRef<
   React.ElementRef<typeof UIButton>,
   IButtonProps
->(({ className, variant = 'default', size = 'default', ...props }, ref) => {
-  return (
-    <UIButton
-      ref={ref}
-      {...props}
-      className={buttonStyle({ variant, size, class: className })}
-      context={{ variant, size }}
-    />
-  );
-});
+>(
+  (
+    { className, variant = 'solid', size = 'md', action = 'primary', ...props },
+    ref
+  ) => {
+    return (
+      <UIButton
+        ref={ref}
+        {...props}
+        className={buttonStyle({ variant, size, action, class: className })}
+        context={{ variant, size, action }}
+      />
+    );
+  }
+);
 type IButtonTextProps = React.ComponentPropsWithoutRef<typeof UIButton.Text> &
   VariantProps<typeof buttonTextStyle> & { className?: string };
 const ButtonText = React.forwardRef<
   React.ElementRef<typeof UIButton.Text>,
   IButtonTextProps
 >(({ className, size, ...props }, ref) => {
-  const { size: parentSize, variant: parentVariant } = useStyleContext(SCOPE);
+  const {
+    size: parentSize,
+    variant: parentVariant,
+    action: parentAction,
+  } = useStyleContext(SCOPE);
   return (
     <UIButton.Text
       ref={ref}
@@ -156,6 +322,7 @@ const ButtonText = React.forwardRef<
         parentVariants: {
           size: parentSize,
           variant: parentVariant,
+          action: parentAction,
         },
         size,
         class: className,
@@ -168,7 +335,16 @@ const ButtonSpinner = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof UIButton.Spinner>
 >(({ className, ...props }, ref) => {
   const { size: parentSize } = useStyleContext(SCOPE);
-  return <UIButton.Spinner ref={ref} {...props} className={buttonSpinnerStyle({ parentVariants: { size: parentSize }, class: className })} />;
+  return (
+    <UIButton.Spinner
+      ref={ref}
+      {...props}
+      className={buttonSpinnerStyle({
+        parentVariants: { size: parentSize },
+        class: className,
+      })}
+    />
+  );
 });
 type IButtonIcon = React.ComponentPropsWithoutRef<typeof UIButton.Icon> &
   VariantProps<typeof buttonIconStyle> & {
@@ -181,7 +357,11 @@ const ButtonIcon = React.forwardRef<
   React.ElementRef<typeof UIButton.Icon>,
   IButtonIcon
 >(({ className, size, ...props }, ref) => {
-  const { size: parentSize, variant: parentVariant } = useStyleContext(SCOPE);
+  const {
+    size: parentSize,
+    variant: parentVariant,
+    action: parentAction,
+  } = useStyleContext(SCOPE);
   if (typeof size === 'number') {
     return (
       <UIButton.Icon
@@ -210,6 +390,7 @@ const ButtonIcon = React.forwardRef<
         parentVariants: {
           size: parentSize,
           variant: parentVariant,
+          action: parentAction,
         },
         size,
         class: className,

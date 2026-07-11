@@ -23,7 +23,11 @@ import { fileURLToPath } from "node:url";
 
 import betterTailwind from "eslint-plugin-better-tailwindcss";
 
-import { SEMANTIC_COLORS, CHART_COLORS } from "./src/design-system/tokens";
+import {
+  SEMANTIC_COLORS,
+  CHART_COLORS,
+  BRIDGE_COLORS,
+} from "./src/design-system/tokens";
 
 const REPO_ROOT = path.dirname(fileURLToPath(import.meta.url));
 /** Tailwind 4 is CSS-first; the design tokens live in global.css, generated from tokens.ts. */
@@ -95,6 +99,46 @@ const ALLOWED_CHART_KEYS = [
   "down",
 ];
 const SEMANTIC_OUTLINE = ["subtle", "default", "strong", "emphasis"];
+/**
+ * The CLOSED gluestack-v5 component-token bridge (shadcn vocabulary). These
+ * vars exist only for vendored v5 components (src/components/ui/**) and are
+ * EXEMPT from the semantic-token budget, but the set must stay exactly this
+ * list (semantic-token-budget asserts it, like the chart annex). App/atom code
+ * is banned from using the utilities (see BRIDGE_BANS below).
+ */
+const ALLOWED_BRIDGE_KEYS = [
+  "background",
+  "foreground",
+  "card",
+  "card-foreground",
+  "popover",
+  "popover-foreground",
+  "primary",
+  "primary-foreground",
+  "secondary",
+  "secondary-foreground",
+  "muted",
+  "muted-foreground",
+  "accent",
+  "accent-foreground",
+  "destructive",
+  "destructive-foreground",
+  "border",
+  "input",
+  "ring",
+];
+/**
+ * Ban the bridge utilities in app/atom code (they are for vendored v5 internals
+ * only). Anchored on the color-utility prefix + the EXACT bridge name (with an
+ * optional variant prefix and opacity modifier), so `bg-primary` /
+ * `text-muted-foreground` / `border-input` / `ring-ring` are banned while the
+ * raw-palette shades (`bg-primary-500`) and the compound semantic tier
+ * (`text-content-primary`, `bg-accent-primary`, `bg-surface-muted`) stay
+ * allowed — those merely END with a bridge-like word.
+ */
+const BRIDGE_BANS = [
+  "(^|:)(bg|text|border|ring|fill|stroke|outline|decoration|divide|placeholder|caret|accent|shadow|from|to|via)-(background|foreground|card|popover|primary|secondary|muted|accent|destructive|border|input|ring)(-foreground)?(/\\d+)?$",
+];
 
 /**
  * Atom directories (sorted) that ship a gallery.tsx — mirrors the generator.
@@ -182,6 +226,22 @@ const designSystemPlugin = {
               context.report({
                 node,
                 message: `design-system: chart annex is a closed palette — unexpected key(s) ${offenders.join(", ")}. Allowed: ${ALLOWED_CHART_KEYS.join(", ")} (docs/design-system/tokens.md, decision #2).`,
+              });
+            }
+            // The gluestack-v5 bridge tier is EXEMPT from the budget count, but
+            // it must stay a closed set (exactly ALLOWED_BRIDGE_KEYS) so nobody
+            // grows the shadcn surface. Assert both directions.
+            const bridgeKeys = Object.keys(BRIDGE_COLORS);
+            const bridgeExtra = bridgeKeys.filter(
+              key => !ALLOWED_BRIDGE_KEYS.includes(key)
+            );
+            const bridgeMissing = ALLOWED_BRIDGE_KEYS.filter(
+              key => !bridgeKeys.includes(key)
+            );
+            if (bridgeExtra.length > 0 || bridgeMissing.length > 0) {
+              context.report({
+                node,
+                message: `design-system: the gluestack-v5 BRIDGE_COLORS tier is a CLOSED set — unexpected ${bridgeExtra.join(", ") || "none"}; missing ${bridgeMissing.join(", ") || "none"}. It must equal ALLOWED_BRIDGE_KEYS (tokens.ts / eslint.config.local.ts).`,
               });
             }
           },
@@ -407,7 +467,10 @@ export default [
       "better-tailwindcss/no-unknown-classes": "error",
       "better-tailwindcss/no-restricted-classes": [
         "error",
-        { restrict: ["\\[.*\\]"] },
+        // Ban arbitrary `[...]` values AND the gluestack-v5 bridge vocabulary
+        // (bg-primary / text-muted-foreground / …) — the bridge is for vendored
+        // v5 internals only; app/atom code speaks the semantic tier + raw shades.
+        { restrict: ["\\[.*\\]", ...BRIDGE_BANS] },
       ],
     },
   },
