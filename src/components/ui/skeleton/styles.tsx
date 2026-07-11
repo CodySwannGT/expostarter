@@ -11,7 +11,10 @@ export const skeletonStyle = tva({
     },
     speed: {
       1: 'duration-750',
-      2: 'duration-100',
+      // Local fix: the v5 template shipped `duration-100` here, making the speed
+      // map non-monotonic (750→100→1500→2000) and inconsistent with the sibling
+      // skeletonTextStyle (which uses duration-1000 for speed 2). Snap to 1000.
+      2: 'duration-1000',
       3: 'duration-1500',
       4: 'duration-2000',
     },

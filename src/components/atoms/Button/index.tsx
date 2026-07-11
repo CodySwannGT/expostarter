@@ -80,7 +80,7 @@ interface ButtonOwnProps
       | "accessibilityLabel"
     >,
     WithUnsafeStyle<UIButtonProps["style"]> {
-  /** Semantic intent (danger maps to Gluestack "negative"). */
+  /** Semantic intent — TONE_TO_ACTION maps it to the vendored button's `action` (danger → "negative"). */
   tone?: ButtonTone;
   variant?: ButtonVariant;
   size?: ButtonSize;
