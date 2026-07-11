@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Portal component exports test
  *

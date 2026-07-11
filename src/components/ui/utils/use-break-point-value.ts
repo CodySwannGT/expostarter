@@ -2,11 +2,10 @@
 import { Dimensions, useWindowDimensions } from 'react-native';
 import { useEffect, useState, useRef } from 'react';
 
-import resolveConfig from 'tailwindcss/resolveConfig';
-import tailwindConfig from 'tailwind.config';
-
-const TailwindTheme = resolveConfig(tailwindConfig);
-const screenSize = TailwindTheme.theme.screens;
+// Tailwind 4 is CSS-first and removes `tailwindcss/resolveConfig`; there is no
+// tailwind.config.js to read `theme.screens` from. Breakpoints now come from the
+// design-token source of truth (the same module global.css is generated from).
+import { BREAKPOINTS as screenSize } from '../../../design-system/tokens';
 
 type breakpoints = keyof typeof screenSize | 'default';
 

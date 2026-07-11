@@ -63,10 +63,10 @@ describe("RootLayout", () => {
     });
 
     it("renders the layout structure", () => {
-      render(<RootLayout />);
-      // The layout should render without errors
-      // Since Stack is mocked, we just verify the component renders
-      expect(true).toBe(true);
+      // Stack is mocked (renders null), so assert render returns a live result
+      // handle rather than a tree snapshot.
+      const result = render(<RootLayout />);
+      expect(result.unmount).toBeInstanceOf(Function);
     });
   });
 });

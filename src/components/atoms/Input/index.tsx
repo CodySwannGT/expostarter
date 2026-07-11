@@ -59,8 +59,10 @@ export interface InputProps
 const Input = React.forwardRef<React.ComponentRef<typeof UIInput>, InputProps>(
   function Input(
     {
-      variant = "outline",
-      size = "md",
+      // v5 Input has no variant/size axis; kept in the public API for stability
+      // and stripped from `...props` (renamed to satisfy no-unused-vars).
+      variant: _variant = "outline",
+      size: _size = "md",
       leadingIcon,
       trailingIcon,
       onTrailingIconPress,
@@ -70,14 +72,14 @@ const Input = React.forwardRef<React.ComponentRef<typeof UIInput>, InputProps>(
     },
     ref
   ) {
+    // Gluestack v5's Input has a single style (no `variant`/`size` axis). The
+    // atom keeps `variant`/`size` in its public API for stability, but they no
+    // longer map to a vendored prop; destructuring them above strips them from
+    // `...props` so they are not forwarded to UIInput.
+    // TODO(design-system): reintroduce size/variant styling via the vendored
+    // input tva (text scale / border treatment) if brand parity requires it.
     return (
-      <UIInput
-        ref={ref}
-        variant={variant}
-        size={size}
-        style={UNSAFE_style}
-        {...props}
-      >
+      <UIInput ref={ref} style={UNSAFE_style} {...props}>
         {leadingIcon ? (
           <InputSlot className="pl-3">
             <InputIcon as={leadingIcon} />

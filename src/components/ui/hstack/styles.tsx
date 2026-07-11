@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { isWeb } from '@gluestack-ui/utils/nativewind-utils';
 import { tva } from '@gluestack-ui/utils/nativewind-utils';
 
@@ -15,7 +16,7 @@ export const hstackStyle = tva({
       'lg': 'gap-4',
       'xl': 'gap-5',
       '2xl': 'gap-6',
-      '3xl': 'gap-6',
+      '3xl': 'gap-7',
       '4xl': 'gap-8',
     },
     reversed: {
