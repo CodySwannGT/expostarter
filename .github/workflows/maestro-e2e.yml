@@ -1,0 +1,52 @@
+name: 📱 Maestro Native E2E
+
+# Native e2e suite on GitHub-hosted runners — the self-hosted alternative to
+# Maestro Cloud. The heavy lifting lives in Lisa's reusable
+# maestro-native-e2e.yml; this caller owns the cadence and the
+# project-specific values. Binaries are built by EAS with the `dev-e2e`
+# profile (eas.json): non-dev-client, dev backend, dedicated `e2e` update
+# channel so an OTA never overwrites the code under test.
+#
+# Until the EXPO_TOKEN repository secret is provisioned, runs skip with a
+# warning instead of failing.
+#
+# iOS-first: the flows hardcode the iOS bundle id (com.yourorg.yourproject-dev), and
+# app.config.ts converts dashes to underscores for the Android package, so
+# Android runs need the flows parameterized on ${MAESTRO_APP_ID} first.
+# Until then the nightly runs iOS only; Android is opt-in via the
+# workflow_dispatch platform picker.
+
+on:
+  schedule:
+    # Nightly against the default branch. 09:00 UTC, offset from other
+    # nightly suites so backend load doesn't overlap.
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Platform(s) to run'
+        type: choice
+        default: ios
+        options:
+          - all
+          - android
+          - ios
+
+permissions:
+  contents: read
+
+concurrency:
+  group: maestro-e2e-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  maestro:
+    name: 📱 Maestro Native E2E
+    uses: CodySwannGT/lisa/.github/workflows/maestro-native-e2e.yml@main
+    with:
+      platform: ${{ inputs.platform || 'ios' }}
+      android_app_id: com.yourorg.yourproject_dev
+      ios_app_id: com.yourorg.yourproject-dev
+    secrets:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+      MAESTRO_SECRET_ENV: ${{ secrets.MAESTRO_SECRET_ENV }}
