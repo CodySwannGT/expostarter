@@ -3,4 +3,12 @@
 project_doc_max_bytes = 65536
 
 [features]
-codex_hooks = true
+hooks = true
+
+# >>> LISA MANAGED MCP SERVERS >>>
+[mcp_servers."sentry"]
+url = "https://mcp.sentry.dev/mcp"
+
+[mcp_servers."expo"]
+url = "https://mcp.expo.dev/mcp"
+# <<< LISA MANAGED MCP SERVERS <<<

@@ -1,6 +1,6 @@
 ---
 name: lisa-tear-down-automations
-description: "Remove every recurring Lisa automation that /setup-automations created for this project (the lisa-auto-<project>-* set: intake-repair, intake-prd, intake-tickets, exploratory-bugs, exploratory-prds) using the CURRENT runtime's native scheduler — Codex automations or, on Claude, /schedule. This skill is a declarative specification: it identifies WHICH automations to remove; it does not run teardown scripts. Removes only this project's Lisa automations — never other projects' automations or non-Lisa ones. The inverse of /setup-automations."
+description: "Remove every recurring Lisa…"
 allowed-tools: ["Skill", "Bash", "Read"]
 ---
 
