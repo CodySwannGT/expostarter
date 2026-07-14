@@ -172,7 +172,7 @@
     "@react-native-masked-view/masked-view": "^0.3.2",
     "@sentry/react-native": "~7.11.0",
     "@shopify/flash-list": "2.0.2",
-    "@shopify/react-native-skia": "2.6.2",
+    "@shopify/react-native-skia": "2.6.4",
     "apollo-link-sentry": "4.4.0",
     "base-64": "^1.0.0",
     "date-fns": "^3.6.0",
@@ -273,7 +273,8 @@
   "trustedDependencies": [
     "@ast-grep/cli",
     "@codyswann/lisa",
-    "@sentry/cli"
+    "@sentry/cli",
+    "@shopify/react-native-skia"
   ],
   "name": "your-project",
   "version": "0.0.0",
