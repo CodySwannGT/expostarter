@@ -1,6 +1,6 @@
 ---
 name: lisa-validate-tracker-mapping
-description: "Detect and repair drift between a project's configured Lisa status/label mappings and the live tracker/source workflow. Compares every lifecycle role in `.lisa.config.json` (JIRA `jira.workflow` statuses, GitHub/Linear `labels.{build,prd}`, Notion `notion.values` select options, Confluence `confluence.parents`) against the authoritative live names the access layer reports — catching renames, deletions, and case drift (e.g. config `On Stg` vs live `ON STG`). Read-only by default; `repair=true` rewrites the config to the canonical live names (config is fixed, never the tracker). Audits the current repo by default, or sweeps a set of projects via `projects=<glob>` / `workspaces=<file>`. Safe to schedule for continuous drift detection."
+description: "Detect and repair drift between…"
 allowed-tools: ["Skill", "Bash", "Read", "Write", "Edit", "AskUserQuestion"]
 ---
 
@@ -23,8 +23,8 @@ It is the audit/repair counterpart to `/lisa:setup:jira` (and the other `setup:*
 ## Arguments
 
 - (none) — audit the **current repo** (`./.lisa.config.json`).
-- `projects=<glob-or-path>` — batch sweep. Expands to every directory under the glob that contains a `.lisa.config.json`. Example: `projects=~/workspace/geminisportsai/projects/*`.
-- `workspaces=<file>` — batch sweep driven by a Lisa workspaces file (the `{ "<project-path>": "<branch>" }` map used by `/lisa:update-projects`). Each key is a project path to audit. Combine with `filter=<substring>` to restrict to matching paths (e.g. `filter=geminisportsai`).
+- `projects=<glob-or-path>` — batch sweep. Expands to every directory under the glob that contains a `.lisa.config.json`. Example: `projects=~/workspace/acme/projects/*`.
+- `workspaces=<file>` — batch sweep driven by a Lisa workspaces file (the `{ "<project-path>": "<branch>" }` map used by `/lisa:update-projects`). Each key is a project path to audit. Combine with `filter=<substring>` to restrict to matching paths (e.g. `filter=acme`).
 - `repair=true` — enable config repair (see confirmation policy). Default `false`.
 - `lane=build|prd|both` — which mapping family to check. Default `both`. `build` = the destination `tracker` workflow; `prd` = the PRD `source` status/label mapping.
 

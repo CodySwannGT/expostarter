@@ -21,15 +21,6 @@
       "url": "https://mcp.expo.dev/mcp",
       "enabled": true,
       "_lisaManaged": true
-    },
-    "maestro": {
-      "type": "local",
-      "command": [
-        "maestro",
-        "mcp"
-      ],
-      "enabled": true,
-      "_lisaManaged": true
     }
   },
   "instructions": [
