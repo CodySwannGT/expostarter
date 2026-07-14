@@ -61,6 +61,18 @@
         "EXPO_PUBLIC_GRAPHQL_BASE_URL": "xxxxxxx",
         "EXPO_PUBLIC_SENTRY_DSN": "xxxxxxx"
       }
+    },
+    "dev-e2e": {
+      "extends": "dev-base",
+      "developmentClient": false,
+      "distribution": "internal",
+      "channel": "e2e",
+      "ios": {
+        "simulator": true
+      },
+      "android": {
+        "buildType": "apk"
+      }
     }
   },
   "submit": {
