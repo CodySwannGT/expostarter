@@ -89,6 +89,37 @@ ships in full. Consequences:
    `@sentry-internal/replay*` on web. If Session Replay is ever adopted,
    remove the flag and re-baseline.
 
+## Parse-time web splash (`public/index.html`)
+
+In SPA export mode (`web.output: "single"`, the default) Expo builds
+`index.html` from `public/index.html`. Without it the shipped body is empty,
+so First Contentful Paint waits for the entire JS bundle to download, execute,
+and mount React. The template ships an inline `#app-splash` overlay (base64
+logo + CSS spinner, system font, zero network dependencies) that paints at
+HTML-parse time, so FCP fires before any JS runs
+([issue #25](https://github.com/CodySwannGT/expostarter/issues/25); measured
+downstream: geminisportsai/frontend-v2 FCP 2,555ms → 1,204ms, TunnlAI/frontend
+FCP → 753ms). TTI is unaffected — this is a paint-path win only.
+
+How it works:
+
+- `public/index.html` — the overlay, a sibling of `#root`. Respects
+  `prefers-color-scheme` (colors mirror the `background-0` / `primary-500`
+  tokens) and `prefers-reduced-motion`; a head-level `<noscript>` hides it
+  for JS-disabled visitors.
+- `src/app/_layout.tsx` — a web-only effect `.remove()`s the overlay once
+  React mounts, so it can never intercept clicks. If your app adds custom
+  fonts, gate the removal on a fonts-ready signal that always settles
+  (`loaded || error !== null` from `useFonts`).
+
+When instantiating the template, re-brand the logo/colors — the regeneration
+one-liner and token mapping are documented in the header comment of
+`public/index.html`.
+
+Caveat: the inline HTML adds ~50ms (×4 under Lighthouse CPU throttle) to
+`bootup-time`'s numericValue — harmless, but it can flip the binary-scored
+`bootup-time` audit if your value sits near the ~1,282ms cliff.
+
 ## Known remaining weight (accepted for now)
 
 - **Sentry on web (~730 KB raw)** — the price of shipping error monitoring in

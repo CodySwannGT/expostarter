@@ -18,6 +18,8 @@ import { useSentryNavigationTracking } from "@/hooks/shared/useSentryNavigationT
 import { initializeSentry, Sentry } from "@/lib/sentry/config";
 import { ThemeProvider, useTheme } from "@/providers/ThemeProvider";
 import { Stack } from "expo-router";
+import { useEffect } from "react";
+import { Platform } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 // Initialize Sentry as early as possible
@@ -51,6 +53,23 @@ function RootLayoutNav(): React.JSX.Element {
  * @returns The root layout with Stack navigator and providers.
  */
 function RootLayout(): React.JSX.Element {
+  // Web: remove the parse-time splash (#app-splash in public/index.html —
+  // the SPA template Expo builds index.html from) once React mounts, handing
+  // off from the splash's First Contentful Paint to the live app (issue #25).
+  // `.remove()` deletes the overlay outright so it can never intercept
+  // clicks afterwards. No-op on native (no #app-splash, no document) and on
+  // a page where the element is already gone (optional chain).
+  //
+  // If your app loads custom fonts, gate this on a fonts-ready signal that
+  // ALWAYS settles — `const [loaded, error] = useFonts(...)`, gate on
+  // `loaded || error !== null` — so a font failure can never strand the
+  // overlay over the app.
+  useEffect(() => {
+    if (Platform.OS === "web" && typeof document !== "undefined") {
+      document.getElementById("app-splash")?.remove();
+    }
+  }, []);
+
   return (
     <ErrorBoundary>
       <SafeAreaProvider>
