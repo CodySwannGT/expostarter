@@ -22,6 +22,7 @@ const config: Config = {
   ],
 
   moduleNameMapper: {
+    "^decode-uri-component$": "<rootDir>/jest.decode-uri-component.cjs",
     "^@/(.*)$": "<rootDir>/src/$1",
   },
 

@@ -1,0 +1,12 @@
+diff --git a/node_modules/eslint-plugin-react-compiler/dist/index.js b/node_modules/eslint-plugin-react-compiler/dist/index.js
+--- a/node_modules/eslint-plugin-react-compiler/dist/index.js
++++ b/node_modules/eslint-plugin-react-compiler/dist/index.js
+@@ -33792,7 +33792,7 @@
+    * A function that, given the name of a module, can optionally return a description
+    * of that module's type signature.
+    */
+-  moduleTypeProvider: import_zod3.z.nullable(import_zod3.z.function().args(import_zod3.z.string())).default(null),
++  moduleTypeProvider: import_zod3.z.nullable(import_zod3.z.function({ input: import_zod3.z.tuple([import_zod3.z.string()]).rest(import_zod3.z.unknown()) })).default(null),
+   /**
+    * A list of functions which the application compiles as macros, where
+    * the compiler must ensure they are not compiled to rename the macro or separate the
